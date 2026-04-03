@@ -1,0 +1,4 @@
+enum ExploreSort {
+  popularity,
+  newest,
+}

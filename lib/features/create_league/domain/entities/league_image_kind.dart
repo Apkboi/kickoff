@@ -1,0 +1,1 @@
+enum LeagueImageKind { logo, banner }
