@@ -9,6 +9,8 @@ import '../../domain/entities/explore_suggested_row_entity.dart';
 
 abstract class ExploreRemoteDataSource {
   Future<ExploreFeedEntity> getFeed();
+
+  Stream<ExploreFeedEntity> watchFeed();
 }
 
 class ExploreRemoteDataSourceImpl implements ExploreRemoteDataSource {
@@ -26,14 +28,22 @@ class ExploreRemoteDataSourceImpl implements ExploreRemoteDataSource {
     return _buildFeed(fromFs);
   }
 
-  Future<List<ExploreLeagueCardEntity>> _loadPublishedLeagues() async {
-    try {
-      final snap = await _firestore
-          .collection(FirestoreCollections.leagues)
-          .limit(60)
-          .get();
+  @override
+  Stream<ExploreFeedEntity> watchFeed() {
+    return _firestore.collection(FirestoreCollections.leagues).limit(60).snapshots().map((snap) {
+      final fromFs = _publishedCardsFromDocs(snap.docs);
+      if (fromFs.isEmpty) {
+        return ExploreMockFeed.build();
+      }
+      return _buildFeed(fromFs);
+    });
+  }
 
-      final docs = snap.docs.where((d) => d.data()['published'] == true).toList()
+  List<ExploreLeagueCardEntity> _publishedCardsFromDocs(
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> docs,
+  ) {
+    try {
+      final filtered = docs.where((d) => d.data()['published'] == true).toList()
         ..sort((a, b) {
           final ta = a.data()['createdAt'];
           final tb = b.data()['createdAt'];
@@ -43,10 +53,23 @@ class ExploreRemoteDataSourceImpl implements ExploreRemoteDataSource {
           return tb.compareTo(ta);
         });
 
-      return docs
+      return filtered
           .map((d) => ExploreLeagueMapper.fromMap(d.id, d.data()))
           .take(24)
           .toList();
+    } catch (_) {
+      return [];
+    }
+  }
+
+  Future<List<ExploreLeagueCardEntity>> _loadPublishedLeagues() async {
+    try {
+      final snap = await _firestore
+          .collection(FirestoreCollections.leagues)
+          .limit(60)
+          .get();
+
+      return _publishedCardsFromDocs(snap.docs);
     } catch (_) {
       return [];
     }
@@ -73,7 +96,7 @@ class ExploreRemoteDataSourceImpl implements ExploreRemoteDataSource {
       suggested.add(
         ExploreSuggestedRowEntity(
           leagueId: g.id,
-          categoryLine: '${g.sportTag} • LEAGUE',
+          categoryLine: '${g.sportTag} • TOURNAMENT',
           title: g.title,
           statusLine: g.footerRightValue,
           isFull: false,

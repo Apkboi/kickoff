@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/dashboard_colors.dart';
 
 class HomeHeroBackground extends StatelessWidget {
@@ -26,11 +27,15 @@ class HomeHeroBackground extends StatelessWidget {
 
   Widget _assetFallback() {
     return Image.asset(
-      'assets/images/hero_stadium.png',
+      AppAssets.gamingHeroPlaceholder,
       fit: BoxFit.cover,
-      errorBuilder: (_, __, ___) => Container(
-        color: DashboardColors.bgSurface,
-        child: const Icon(Icons.stadium, size: 64, color: DashboardColors.textSecondary),
+      errorBuilder: (_, __, ___) => Image.asset(
+        'assets/images/hero_stadium.png',
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => Container(
+          color: DashboardColors.bgSurface,
+          child: const Icon(Icons.sports_esports, size: 64, color: DashboardColors.textSecondary),
+        ),
       ),
     );
   }

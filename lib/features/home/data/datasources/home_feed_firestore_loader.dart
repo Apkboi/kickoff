@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../core/constants/league_firestore_fields.dart';
+import '../../../../core/models/stream_link.dart';
 import '../../domain/entities/home_live_match_entity.dart';
 import '../../domain/entities/home_trending_league_entity.dart';
 
@@ -13,7 +14,6 @@ abstract final class HomeFeedFirestoreLoader {
     Map<String, String> leagueNames, {
     Map<String, String?> leagueBanners = const {},
   }) {
-    final now = DateTime.now();
     final list = <HomeLiveMatchEntity>[];
     for (final doc in docs) {
       final leagueId = doc.reference.parent.parent?.id;
@@ -23,12 +23,15 @@ abstract final class HomeFeedFirestoreLoader {
       final away = (data[LeagueFirestoreFields.awayName] as String?) ?? 'Away';
       final homeScore = (data[LeagueFirestoreFields.homeScore] as num?)?.toInt() ?? 0;
       final awayScore = (data[LeagueFirestoreFields.awayScore] as num?)?.toInt() ?? 0;
-      final startedAt = (data[LeagueFirestoreFields.startedAt] as Timestamp?)?.toDate();
-      final minute = startedAt != null
-          ? now.difference(startedAt).inMinutes.clamp(0, 120)
-          : 1;
-      final progress = (minute / 90.0).clamp(0.0, 1.0);
+      // Progress bar not tied to real match clock for now.
+      const minute = 0;
+      const progress = 0.0;
       final banner = leagueBanners[leagueId];
+      final streamUrl = data[LeagueFirestoreFields.streamUrl] as String?;
+      final streamLinks = StreamLink.listFromFirestore(
+        data[LeagueFirestoreFields.streamLinks],
+        streamUrl,
+      );
       list.add(
         HomeLiveMatchEntity(
           leagueId: leagueId,
@@ -41,6 +44,7 @@ abstract final class HomeFeedFirestoreLoader {
           awayScore: awayScore,
           elapsedMinute: minute,
           progress: progress,
+          streamLinks: streamLinks,
         ),
       );
     }

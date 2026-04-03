@@ -1,5 +1,7 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/models/stream_link.dart';
+
 class HomeLiveMatchEntity extends Equatable {
   const HomeLiveMatchEntity({
     required this.leagueId,
@@ -12,6 +14,7 @@ class HomeLiveMatchEntity extends Equatable {
     required this.awayScore,
     required this.elapsedMinute,
     required this.progress,
+    this.streamLinks = const [],
   });
 
   final String leagueId;
@@ -24,6 +27,7 @@ class HomeLiveMatchEntity extends Equatable {
   final int awayScore;
   final int elapsedMinute;
   final double progress;
+  final List<StreamLink> streamLinks;
 
   @override
   List<Object?> get props => [
@@ -37,5 +41,6 @@ class HomeLiveMatchEntity extends Equatable {
         awayScore,
         elapsedMinute,
         progress,
+        streamLinks,
       ];
 }

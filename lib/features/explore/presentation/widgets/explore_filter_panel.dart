@@ -94,7 +94,7 @@ class ExploreFilterPanel extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Want a custom league? Set your own rules, seasons, and prizes for your team.',
+                  'Want a custom tournament? Set your own rules, seasons, and prizes for your team.',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(color: DashboardColors.textSecondary),
                 ),
                 const SizedBox(height: AppSpacing.md),

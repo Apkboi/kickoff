@@ -57,10 +57,10 @@ ManageLeagueSnapshotEntity buildManageLeagueSnapshotFromFixture({
     leagueName: leagueName,
     matchTitle: matchTitle,
     matchdayClockLabel: isFinished
-        ? '$roundLabel • FT'
+        ? '$roundLabel • Full time'
         : scoringEnabled
-            ? "$roundLabel • 0'"
-            : '$roundLabel • Kickoff pending',
+            ? '$roundLabel • Live'
+            : '$roundLabel • Scheduled',
     isLive: isLive,
     homeTeamName: _titleCase(home),
     homeTeamShort: _shortName(home),
@@ -68,7 +68,7 @@ ManageLeagueSnapshotEntity buildManageLeagueSnapshotFromFixture({
     awayTeamShort: _shortName(away),
     homeScore: fixture.homeScore,
     awayScore: fixture.awayScore,
-    matchClock: isFinished ? 'FT' : scoringEnabled ? '0:00' : '—',
+    matchClock: '—',
     scoringEnabled: scoringEnabled,
     events: const [],
     homePhotoUrl: null,

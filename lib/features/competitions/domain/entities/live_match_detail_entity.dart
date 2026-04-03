@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/models/stream_link.dart';
 import 'manage_match_event_entity.dart';
 
 class LiveMatchDetailEntity extends Equatable {
@@ -15,8 +16,10 @@ class LiveMatchDetailEntity extends Equatable {
     required this.isLive,
     required this.venueLine,
     required this.streamUrl,
+    this.streamLinks = const [],
     required this.recentEvents,
     this.kickoffAt,
+    this.startedAt,
     this.matchStatusRaw = '',
   });
 
@@ -31,10 +34,14 @@ class LiveMatchDetailEntity extends Equatable {
   final bool isLive;
   final String venueLine;
   final String? streamUrl;
+  final List<StreamLink> streamLinks;
   final List<ManageMatchEventEntity> recentEvents;
 
   /// Scheduled kickoff (UTC or local); null when not set.
   final DateTime? kickoffAt;
+
+  /// When the match went live (may mirror [kickoffAt] after start).
+  final DateTime? startedAt;
 
   /// Raw Firestore `status` value (e.g. `live`, `scheduled`, `ft`).
   final String matchStatusRaw;
@@ -52,8 +59,10 @@ class LiveMatchDetailEntity extends Equatable {
         isLive,
         venueLine,
         streamUrl,
+        streamLinks,
         recentEvents,
         kickoffAt,
+        startedAt,
         matchStatusRaw,
       ];
 }

@@ -4,8 +4,6 @@ import '../../../../core/constants/app_spacing.dart';
 import 'manage_league_active_matches_sidebar.dart';
 import 'manage_league_desktop_event_section.dart';
 import 'manage_league_desktop_score_block.dart';
-import 'manage_league_desktop_toolbar.dart';
-
 class ManageLeagueDesktopBody extends StatelessWidget {
   const ManageLeagueDesktopBody({
     required this.competitionId,
@@ -31,8 +29,6 @@ class ManageLeagueDesktopBody extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const ManageLeagueDesktopToolbar(),
-                const SizedBox(height: AppSpacing.lg),
                 const ManageLeagueDesktopScoreBlock(),
                 const ManageLeagueDesktopEventSection(),
               ],

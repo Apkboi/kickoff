@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/constants/app_routes.dart';
+import '../../../../shared/widgets/stream_link_launch_sheet.dart';
 import '../../domain/entities/home_live_match_entity.dart';
 import '../../domain/entities/home_upcoming_fixture_entity.dart';
 import '../utils/home_fixture_formatters.dart';
@@ -31,11 +32,16 @@ class HomeDashboardHero extends StatelessWidget {
         awayTeam: m.awayName.toUpperCase(),
         homeScore: m.homeScore,
         awayScore: m.awayScore,
-        minute: m.elapsedMinute,
         isLive: true,
         bannerImageUrl: m.leagueBannerUrl,
         compact: compact,
-        onTap: () => HomeDashboardNav.openMatch(context, m.leagueId, m.matchId),
+        onTap: () async {
+          if (m.streamLinks.isNotEmpty) {
+            await launchStreamLinksOrSheet(context, m.streamLinks);
+          } else {
+            HomeDashboardNav.openMatch(context, m.leagueId, m.matchId);
+          }
+        },
       );
     }
     if (upcomingMatches.isNotEmpty) {
@@ -49,7 +55,6 @@ class HomeDashboardHero extends StatelessWidget {
         awayTeam: u.awayName.toUpperCase(),
         homeScore: 0,
         awayScore: 0,
-        minute: 0,
         isLive: false,
         kickoffLabel: label,
         bannerImageUrl: u.leagueBannerUrl,
@@ -64,7 +69,6 @@ class HomeDashboardHero extends StatelessWidget {
       awayTeam: 'RIVAL',
       homeScore: 0,
       awayScore: 0,
-      minute: 0,
       isLive: false,
       kickoffLabel: 'Create or join a league',
       compact: compact,

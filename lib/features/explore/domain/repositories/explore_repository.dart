@@ -5,4 +5,6 @@ import '../entities/explore_feed_entity.dart';
 
 abstract class ExploreRepository {
   Future<Either<Failure, ExploreFeedEntity>> getFeed();
+
+  Stream<ExploreFeedEntity> watchFeed();
 }

@@ -9,7 +9,7 @@ import 'app_scaffold.dart';
 String _titleForLocation(String location) {
   final path = location.isEmpty ? AppRoutes.home : location;
   if (path.endsWith('/manage')) {
-    return 'Manage League';
+    return 'Manage tournament';
   }
   if (path.contains('/matches/')) {
     return 'Live match';
@@ -20,8 +20,7 @@ String _titleForLocation(String location) {
   return switch (path) {
     AppRoutes.home => 'KickOff',
     AppRoutes.explore => 'Explore',
-    AppRoutes.competitions => 'My Leagues',
-    AppRoutes.schedule => 'Schedule',
+    AppRoutes.competitions => 'My tournaments',
     AppRoutes.profile => 'Profile',
     AppRoutes.createLeague => 'Create League',
     _ => 'KickOff',

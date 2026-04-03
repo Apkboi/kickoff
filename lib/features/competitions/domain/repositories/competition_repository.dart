@@ -8,6 +8,8 @@ import '../entities/standing_row_entity.dart';
 abstract class CompetitionRepository {
   Future<Either<Failure, List<CompetitionEntity>>> getCompetitions();
 
+  Stream<List<CompetitionEntity>> watchCompetitions();
+
   Future<Either<Failure, LeagueDetailEntity>> getCompetitionById(String id);
 
   Stream<List<StandingRowEntity>> watchCompetitionStandings(String competitionId);

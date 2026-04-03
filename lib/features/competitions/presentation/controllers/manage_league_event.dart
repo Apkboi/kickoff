@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../../../core/models/stream_link.dart';
 import '../../domain/entities/manage_match_event_entity.dart';
 
 abstract class ManageLeagueEvent extends Equatable {
@@ -30,13 +31,13 @@ class ManageLeagueMatchSelected extends ManageLeagueEvent {
 
 /// Kick off a scheduled fixture so scoring controls unlock.
 class ManageLeagueMatchStarted extends ManageLeagueEvent {
-  const ManageLeagueMatchStarted(this.matchId, {this.streamUrl});
+  const ManageLeagueMatchStarted(this.matchId, {this.streamLinks = const []});
 
   final String matchId;
-  final String? streamUrl;
+  final List<StreamLink> streamLinks;
 
   @override
-  List<Object?> get props => [matchId, streamUrl];
+  List<Object?> get props => [matchId, streamLinks];
 }
 
 /// Marks a live match as finished, persists final score, and triggers standings update.

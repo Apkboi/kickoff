@@ -23,6 +23,11 @@ class CompetitionRepositoryImpl implements CompetitionRepository {
   }
 
   @override
+  Stream<List<CompetitionEntity>> watchCompetitions() {
+    return _remoteDataSource.watchCompetitions();
+  }
+
+  @override
   Future<Either<Failure, LeagueDetailEntity>> getCompetitionById(String id) async {
     try {
       final detail = await _remoteDataSource.getCompetitionById(id);

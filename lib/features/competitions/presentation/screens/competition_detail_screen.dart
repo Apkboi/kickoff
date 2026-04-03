@@ -126,7 +126,7 @@ class CompetitionDetailScreen extends StatelessWidget {
                       child: FilledButton.icon(
                         onPressed: () => context.push(AppRoutes.manageLeaguePath(detail.id)),
                         icon: const Icon(Icons.tune_outlined),
-                        label: const Text('Manage league'),
+                        label: const Text('Manage tournament'),
                         style: FilledButton.styleFrom(
                           backgroundColor: DashboardColors.accentGreen,
                           foregroundColor: DashboardColors.textOnAccent,

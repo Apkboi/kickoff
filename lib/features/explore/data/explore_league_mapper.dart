@@ -1,4 +1,5 @@
 import '../../../core/constants/league_firestore_fields.dart';
+import '../../../core/utils/app_currency_format.dart';
 import '../domain/entities/explore_league_card_entity.dart';
 import '../domain/entities/explore_sport.dart';
 
@@ -41,7 +42,7 @@ abstract final class ExploreLeagueMapper {
       sport: sport,
       location: data['location'] as String? ?? 'Online',
       footerLeftLabel: 'PRIZE POOL',
-      footerLeftValue: prize != null ? '\$${prize.toStringAsFixed(0)}' : '—',
+      footerLeftValue: prize != null ? AppCurrencyFormat.naira(prize) : '—',
       footerRightLabel: 'TEAMS',
       footerRightValue: '$participantCount / $maxP',
       sportAccentIndex: accentForSport(sport),

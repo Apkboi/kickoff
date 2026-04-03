@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/dashboard_colors.dart';
+import '../../../auth/presentation/controllers/auth_bloc.dart';
+import '../../../auth/presentation/controllers/auth_event.dart';
 
 class MyLeaguesMobileHeader extends StatelessWidget {
   const MyLeaguesMobileHeader({super.key});
@@ -29,8 +32,9 @@ class MyLeaguesMobileHeader extends StatelessWidget {
             ),
           ),
           IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.notifications_outlined, color: DashboardColors.accentGreen),
+            tooltip: 'Log out',
+            onPressed: () => context.read<AuthBloc>().add(const SignOutRequested()),
+            icon: const Icon(Icons.logout, color: DashboardColors.textSecondary),
           ),
         ],
       ),

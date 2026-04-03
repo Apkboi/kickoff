@@ -12,8 +12,9 @@ import '../controllers/match_prediction_event.dart';
 import '../controllers/match_prediction_state.dart';
 import 'match_prediction_inputs_section.dart';
 import 'match_prediction_leaderboard.dart';
+import 'match_prediction_your_pick_card.dart';
 
-/// Simple prediction UI: enter score until 3 minutes before kickoff; correct = 3 league points.
+/// Score prediction until −3 min before kickoff; exact score = 3 tournament points.
 class MatchPredictionPanel extends StatefulWidget {
   const MatchPredictionPanel({super.key});
 
@@ -25,16 +26,13 @@ class _MatchPredictionPanelState extends State<MatchPredictionPanel> {
   final _homeCtrl = TextEditingController();
   final _awayCtrl = TextEditingController();
 
-  /// When false, server scores are applied to the text fields whenever they update.
-  /// Set true after "Change prediction" so typing is not overwritten; cleared after a successful save.
+  /// If false, controllers sync from Firestore; true after "Change" until save succeeds.
   bool _skipServerTextSync = false;
-
   bool _pendingSave = false;
   bool _submitting = false;
   bool _showSuccess = false;
   int? _lastSubmittedHome;
   int? _lastSubmittedAway;
-
   @override
   void dispose() {
     _homeCtrl.dispose();
@@ -73,7 +71,6 @@ class _MatchPredictionPanelState extends State<MatchPredictionPanel> {
     _homeCtrl.text = '${pred.homePredicted}';
     _awayCtrl.text = '${pred.awayPredicted}';
   }
-
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<MatchPredictionBloc, MatchPredictionState>(
@@ -86,10 +83,7 @@ class _MatchPredictionPanelState extends State<MatchPredictionPanel> {
       },
       builder: (context, state) {
         if (state is MatchPredictionLoading || state is MatchPredictionInitial) {
-          return const Padding(
-            padding: EdgeInsets.only(top: AppSpacing.md),
-            child: LoadingShimmer(),
-          );
+          return const Padding(padding: EdgeInsets.only(top: AppSpacing.md), child: LoadingShimmer());
         }
         if (state is MatchPredictionError) {
           return Padding(
@@ -97,9 +91,7 @@ class _MatchPredictionPanelState extends State<MatchPredictionPanel> {
             child: Text(state.message, style: const TextStyle(color: DashboardColors.textSecondary)),
           );
         }
-        if (state is! MatchPredictionReady) {
-          return const SizedBox.shrink();
-        }
+        if (state is! MatchPredictionReady) return const SizedBox.shrink();
         final d = state.data;
         final err = state.actionError;
 
@@ -133,10 +125,14 @@ class _MatchPredictionPanelState extends State<MatchPredictionPanel> {
                 ),
                 const SizedBox(height: AppSpacing.xs),
                 Text(
-                  'You can change your pick until 3 minutes before kickoff. Each exact score earns 3 points in this league.',
+                  'You can change your pick until 3 minutes before kickoff. Each exact score earns 3 points in this tournament.',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(color: DashboardColors.textSecondary),
                 ),
                 const SizedBox(height: AppSpacing.md),
+                if (d.userPrediction != null) ...[
+                  MatchPredictionYourPickCard(prediction: d.userPrediction!),
+                  const SizedBox(height: AppSpacing.md),
+                ],
                 if (!d.isSignedIn)
                   TextButton(
                     onPressed: () => context.push(AppRoutes.signIn),
@@ -146,7 +142,7 @@ class _MatchPredictionPanelState extends State<MatchPredictionPanel> {
                   const Text('Kickoff time not set yet.', style: TextStyle(color: DashboardColors.textSecondary))
                 else if (!d.isPredictionWindowOpen)
                   Text(
-                    d.matchStatusRaw == 'live' || d.matchStatusRaw == 'finished' || d.matchStatusRaw == 'ft'
+                    {'live', 'finished', 'ft'}.contains(d.matchStatusRaw)
                         ? 'Predictions are closed for this match.'
                         : 'Predictions closed (window ends 3 minutes before kickoff).',
                     style: const TextStyle(color: DashboardColors.textSecondary),
@@ -176,7 +172,7 @@ class _MatchPredictionPanelState extends State<MatchPredictionPanel> {
                 ],
                 const SizedBox(height: AppSpacing.lg),
                 Text(
-                  'League leaderboard',
+                  'Tournament leaderboard',
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
                 ),
                 const SizedBox(height: AppSpacing.sm),
@@ -188,7 +184,6 @@ class _MatchPredictionPanelState extends State<MatchPredictionPanel> {
       },
     );
   }
-
   void _submit(BuildContext context) {
     final h = int.tryParse(_homeCtrl.text.trim());
     final a = int.tryParse(_awayCtrl.text.trim());
@@ -200,8 +195,6 @@ class _MatchPredictionPanelState extends State<MatchPredictionPanel> {
       _submitting = true;
       _showSuccess = false;
     });
-    context.read<MatchPredictionBloc>().add(
-          MatchPredictionSubmitted(homePredicted: h, awayPredicted: a),
-        );
+    context.read<MatchPredictionBloc>().add(MatchPredictionSubmitted(homePredicted: h, awayPredicted: a));
   }
 }

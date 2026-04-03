@@ -21,8 +21,7 @@ class KickoffSidebar extends StatelessWidget {
   static const _items = <({IconData icon, String label})>[
     (icon: Icons.home_outlined, label: 'Home'),
     (icon: Icons.explore_outlined, label: 'Explore'),
-    (icon: Icons.emoji_events_outlined, label: 'My Leagues'),
-    (icon: Icons.calendar_month_outlined, label: 'Schedule'),
+    (icon: Icons.emoji_events_outlined, label: 'My tournaments'),
     (icon: Icons.person_outline, label: 'Profile'),
   ];
 

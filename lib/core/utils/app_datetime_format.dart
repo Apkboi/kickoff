@@ -20,4 +20,9 @@ abstract final class AppDateTimeFormat {
     if (kd == t.add(const Duration(days: 1))) return 'Tomorrow';
     return DateFormat('EEE d MMM').format(local);
   }
+
+  /// Calendar day for filter chips (local midnight [d]).
+  static String calendarFilterDate(DateTime dateOnlyLocal) {
+    return DateFormat('EEE, d MMM yyyy').format(dateOnlyLocal);
+  }
 }

@@ -13,7 +13,6 @@ import '../controllers/competition_event.dart';
 import '../controllers/competition_state.dart';
 import '../widgets/my_league_card.dart';
 import '../widgets/my_leagues_mobile_header.dart';
-import '../widgets/my_leagues_stat_cards.dart';
 
 class CompetitionScreen extends StatefulWidget {
   const CompetitionScreen({super.key});
@@ -64,7 +63,7 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
             Padding(
               padding: padding,
               child: Text(
-                'My Leagues',
+                'My tournaments',
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                       color: DashboardColors.accentGreen,
                       fontWeight: FontWeight.w800,
@@ -80,16 +79,16 @@ class _CompetitionScreenState extends State<CompetitionScreen> {
               ),
             ),
             const SizedBox(height: AppSpacing.md),
-            Padding(
-              padding: padding,
-              child: const MyLeaguesStatCards(activeCount: '12', rankLabel: '#4'),
-            ),
-            const SizedBox(height: AppSpacing.md),
             Expanded(
-              child: ListView.separated(
+              child: GridView.builder(
                 padding: padding.copyWith(bottom: AppSpacing.xl),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: Responsive.isDesktop(context) ? 3 : 2,
+                  mainAxisSpacing: AppSpacing.md,
+                  crossAxisSpacing: AppSpacing.md,
+                  childAspectRatio: 0.68,
+                ),
                 itemCount: list.length,
-                separatorBuilder: (_, __) => const SizedBox(height: AppSpacing.md),
                 itemBuilder: (context, index) {
                   final c = list[index];
                   return MyLeagueCard(

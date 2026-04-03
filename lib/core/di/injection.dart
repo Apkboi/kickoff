@@ -139,7 +139,7 @@ Future<void> configureDependencies() async {
     ..registerLazySingleton<WatchCompetitionStandingsUseCase>(
       () => WatchCompetitionStandingsUseCase(getIt()),
     )
-    ..registerLazySingleton<CompetitionBloc>(() => CompetitionBloc(getIt()))
+    ..registerLazySingleton<CompetitionBloc>(() => CompetitionBloc(getIt<CompetitionRepository>()))
     ..registerFactory<CompetitionDetailBloc>(() => CompetitionDetailBloc(getIt(), getIt()))
     ..registerLazySingleton<ManageLeagueRemoteDataSource>(
       () => ManageLeagueRemoteDataSourceImpl(getIt()),
@@ -286,7 +286,7 @@ Future<void> configureDependencies() async {
     )
     ..registerLazySingleton<ExploreRepository>(() => ExploreRepositoryImpl(getIt()))
     ..registerLazySingleton<GetExploreFeedUseCase>(() => GetExploreFeedUseCase(getIt()))
-    ..registerFactory<ExploreBloc>(() => ExploreBloc(getIt()))
+    ..registerFactory<ExploreBloc>(() => ExploreBloc(getIt<ExploreRepository>()))
     ..registerLazySingleton<ProfileRemoteDataSource>(
       () => ProfileRemoteDataSourceImpl(getIt()),
     )

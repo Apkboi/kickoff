@@ -5,6 +5,8 @@ extension LeagueDetailAdminX on LeagueDetailEntity {
   bool isViewerAdmin({required String? userId, required bool authenticated}) {
     if (!authenticated || userId == null || userId.isEmpty) return false;
     if (adminUserIds.contains('*')) return true;
+    final creator = creatorUserId;
+    if (creator != null && creator.isNotEmpty && creator == userId) return true;
     return adminUserIds.contains(userId);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_radius.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/dashboard_colors.dart';
@@ -42,12 +43,18 @@ class LeagueDetailHero extends StatelessWidget {
                     fit: BoxFit.cover,
                     height: compact ? 200 : 280,
                     width: double.infinity,
-                    errorBuilder: (_, __, ___) => Center(
-                      child: Icon(Icons.stadium, size: 88, color: DashboardColors.accentGreen.withValues(alpha: 0.35)),
+                    errorBuilder: (_, __, ___) => Image.asset(
+                      AppAssets.gamingHeroPlaceholder,
+                      fit: BoxFit.cover,
+                      height: compact ? 200 : 280,
+                      width: double.infinity,
                     ),
                   )
-                : Center(
-                    child: Icon(Icons.stadium, size: 88, color: DashboardColors.accentGreen.withValues(alpha: 0.35)),
+                : Image.asset(
+                    AppAssets.gamingHeroPlaceholder,
+                    fit: BoxFit.cover,
+                    height: compact ? 200 : 280,
+                    width: double.infinity,
                   ),
           ),
           Positioned.fill(

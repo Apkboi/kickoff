@@ -45,7 +45,7 @@ class _LeaguePredictionLeaderboardSectionState extends State<LeaguePredictionLea
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            '3 points per exact score. Open any match below to enter your pick before kickoff (−3 min).',
+            '3 points per exact score. Open any match below to enter your pick before kickoff (−3 min) in this tournament.',
             style: Theme.of(context).textTheme.bodySmall?.copyWith(color: DashboardColors.textSecondary),
           ),
           const SizedBox(height: AppSpacing.md),

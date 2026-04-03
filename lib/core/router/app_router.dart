@@ -25,7 +25,6 @@ import '../../features/explore/presentation/controllers/explore_event.dart';
 import '../../features/explore/presentation/screens/explore_screen.dart';
 import '../../features/profile/presentation/controllers/profile_bloc.dart';
 import '../../features/profile/presentation/screens/profile_screen.dart';
-import '../../shared/widgets/placeholder_nav_screen.dart';
 import '../constants/app_routes.dart';
 import '../di/injection.dart';
 import '../../features/auth/presentation/controllers/auth_bloc.dart';
@@ -87,19 +86,6 @@ abstract final class AppRouter {
                       value: competitionBloc,
                       child: const CompetitionScreen(),
                     ),
-                  );
-                },
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: <RouteBase>[
-              GoRoute(
-                path: AppRoutes.schedule,
-                pageBuilder: (BuildContext context, GoRouterState state) {
-                  return NoTransitionPage<void>(
-                    key: state.pageKey,
-                    child: const PlaceholderNavScreen(title: 'Schedule'),
                   );
                 },
               ),

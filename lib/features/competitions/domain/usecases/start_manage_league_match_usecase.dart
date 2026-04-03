@@ -2,21 +2,22 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../../../../core/models/stream_link.dart';
 import '../repositories/manage_league_repository.dart';
 
 class StartManageLeagueMatchParams extends Equatable {
   const StartManageLeagueMatchParams({
     required this.competitionId,
     required this.matchId,
-    this.streamUrl,
+    this.streamLinks = const [],
   });
 
   final String competitionId;
   final String matchId;
-  final String? streamUrl;
+  final List<StreamLink> streamLinks;
 
   @override
-  List<Object?> get props => [competitionId, matchId, streamUrl];
+  List<Object?> get props => [competitionId, matchId, streamLinks];
 }
 
 class StartManageLeagueMatchUseCase {
@@ -28,7 +29,7 @@ class StartManageLeagueMatchUseCase {
     return _repository.startMatch(
       competitionId: params.competitionId,
       matchId: params.matchId,
-      streamUrl: params.streamUrl,
+      streamLinks: params.streamLinks,
     );
   }
 }

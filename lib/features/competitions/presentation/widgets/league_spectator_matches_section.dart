@@ -6,12 +6,15 @@ import '../../../../core/constants/app_routes.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/theme/dashboard_colors.dart';
-import '../../domain/usecases/watch_league_fixtures_usecase.dart';
+import '../../../../core/utils/app_datetime_format.dart';
 import '../../domain/entities/league_fixture_summary_entity.dart';
+import '../../domain/usecases/watch_league_fixtures_usecase.dart';
+import 'league_spectator_filter_dropdown.dart';
+import 'league_spectator_fixture_filters.dart';
+import 'league_spectator_fixture_tile.dart';
 
 /// Live / upcoming matches fans open for the read-only [MatchDetailScreen].
-/// Not used from the admin manage-league flow.
-class LeagueSpectatorMatchesSection extends StatelessWidget {
+class LeagueSpectatorMatchesSection extends StatefulWidget {
   const LeagueSpectatorMatchesSection({
     required this.competitionId,
     required this.fixtures,
@@ -21,15 +24,36 @@ class LeagueSpectatorMatchesSection extends StatelessWidget {
   final String competitionId;
   final List<LeagueFixtureSummaryEntity> fixtures;
 
-  static const int _pageSize = 4;
+  static const int pageSize = 8;
+
+  @override
+  State<LeagueSpectatorMatchesSection> createState() => _LeagueSpectatorMatchesSectionState();
+}
+
+class _LeagueSpectatorMatchesSectionState extends State<LeagueSpectatorMatchesSection> {
+  DateTime? _dateFilter;
+  LeagueSpectatorResultFilter _resultFilter = LeagueSpectatorResultFilter.all;
 
   @override
   Widget build(BuildContext context) {
     final watch = getIt<WatchLeagueFixturesUseCase>();
     return StreamBuilder<List<LeagueFixtureSummaryEntity>>(
-      stream: watch(competitionId: competitionId),
+      stream: watch(competitionId: widget.competitionId),
       builder: (context, snap) {
-        final liveFixtures = (snap.data ?? fixtures).take(_pageSize).toList();
+        final raw = snap.data ?? widget.fixtures;
+        final kickoffDates = distinctSortedKickoffDates(raw);
+        if (_dateFilter != null && !kickoffDates.contains(_dateFilter)) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted) setState(() => _dateFilter = null);
+          });
+        }
+        final filtered = applyLeagueSpectatorFilters(
+          all: raw,
+          dateFilter: _dateFilter,
+          resultFilter: _resultFilter,
+        );
+        final page = filtered.take(LeagueSpectatorMatchesSection.pageSize).toList();
+
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -43,36 +67,58 @@ class LeagueSpectatorMatchesSection extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                       ),
                 ),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (liveFixtures.length == _pageSize)
-                      TextButton(
-                        onPressed: () => context.push(AppRoutes.competitionFixturesPath(competitionId)),
-                        child: Text(
-                          'View all',
-                          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                                color: DashboardColors.accentGreen,
-                                fontWeight: FontWeight.w800,
-                              ),
-                        ),
-                      ),
-                    Text(
-                      'Realtime',
-                      style: Theme.of(context).textTheme.labelMedium?.copyWith(color: DashboardColors.textSecondary),
-                    ),
-                  ],
+                Text(
+                  'Realtime',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(color: DashboardColors.textSecondary),
                 ),
               ],
             ),
+            const SizedBox(height: AppSpacing.sm),
+            Wrap(
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                LeagueSpectatorFilterDropdown<DateTime?>(
+                  label: 'Date',
+                  value: _dateFilter,
+                  items: [
+                    (null, 'All dates'),
+                    ...kickoffDates.map((d) => (d, AppDateTimeFormat.calendarFilterDate(d))),
+                  ],
+                  onChanged: (v) => setState(() => _dateFilter = v),
+                ),
+                LeagueSpectatorFilterDropdown<LeagueSpectatorResultFilter>(
+                  label: 'Show',
+                  value: _resultFilter,
+                  items: [
+                    (LeagueSpectatorResultFilter.all, LeagueSpectatorResultFilter.all.label),
+                    (LeagueSpectatorResultFilter.upcomingAndLive, LeagueSpectatorResultFilter.upcomingAndLive.label),
+                    (LeagueSpectatorResultFilter.finished, LeagueSpectatorResultFilter.finished.label),
+                  ],
+                  onChanged: (v) => setState(() => _resultFilter = v ?? LeagueSpectatorResultFilter.all),
+                ),
+                if (filtered.length >= LeagueSpectatorMatchesSection.pageSize)
+                  TextButton(
+                    onPressed: () => context.push(AppRoutes.competitionFixturesPath(widget.competitionId)),
+                    child: Text(
+                      'View all',
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                            color: DashboardColors.accentGreen,
+                            fontWeight: FontWeight.w800,
+                          ),
+                    ),
+                  ),
+              ],
+            ),
             const SizedBox(height: AppSpacing.md),
-            if (liveFixtures.isEmpty)
+            if (page.isEmpty)
               Text(
-                'No fixtures scheduled yet.',
+                'No fixtures match these filters.',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(color: DashboardColors.textSecondary),
               )
             else
-              ...liveFixtures.map(
+              ...page.map(
                 (r) => Padding(
                   key: ValueKey<String>(r.matchId),
                   padding: const EdgeInsets.only(bottom: AppSpacing.sm),
@@ -80,7 +126,7 @@ class LeagueSpectatorMatchesSection extends StatelessWidget {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(AppRadius.card),
-                      onTap: () => context.push(AppRoutes.matchDetailPath(competitionId, r.matchId)),
+                      onTap: () => context.push(AppRoutes.matchDetailPath(widget.competitionId, r.matchId)),
                       child: Container(
                         padding: const EdgeInsets.all(AppSpacing.md),
                         decoration: BoxDecoration(
@@ -88,7 +134,7 @@ class LeagueSpectatorMatchesSection extends StatelessWidget {
                           borderRadius: BorderRadius.circular(AppRadius.card),
                           border: Border.all(color: DashboardColors.borderSubtle),
                         ),
-                        child: _FootballFixtureTile(fixture: r),
+                        child: LeagueSpectatorFixtureTile(fixture: r),
                       ),
                     ),
                   ),
@@ -97,60 +143,6 @@ class LeagueSpectatorMatchesSection extends StatelessWidget {
           ],
         );
       },
-    );
-  }
-}
-
-class _FootballFixtureTile extends StatelessWidget {
-  const _FootballFixtureTile({required this.fixture});
-
-  final LeagueFixtureSummaryEntity fixture;
-
-  @override
-  Widget build(BuildContext context) {
-    final teams = fixture.headline.split(RegExp(r'\s+vs\s+', caseSensitive: false));
-    final home = teams.isNotEmpty ? teams.first : 'Home';
-    final away = teams.length > 1 ? teams[1] : 'Away';
-    final scoreLabel = fixture.phase == LeagueFixturePhase.scheduled
-        ? '-'
-        : '${fixture.homeScore} - ${fixture.awayScore}';
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            home,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
-          child: Column(
-            children: [
-              Text(
-                scoreLabel,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w900),
-              ),
-              Text(
-                fixture.statusLine,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(color: DashboardColors.textSecondary),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: Text(
-            away,
-            textAlign: TextAlign.end,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-          ),
-        ),
-        const SizedBox(width: AppSpacing.sm),
-        Icon(Icons.chevron_right, color: DashboardColors.textSecondary.withValues(alpha: 0.6)),
-      ],
     );
   }
 }

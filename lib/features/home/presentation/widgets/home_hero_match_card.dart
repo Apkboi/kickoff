@@ -14,7 +14,6 @@ class HomeHeroMatchCard extends StatelessWidget {
     required this.awayTeam,
     required this.homeScore,
     required this.awayScore,
-    required this.minute,
     this.isLive = true,
     this.kickoffLabel = '',
     this.bannerImageUrl,
@@ -30,7 +29,6 @@ class HomeHeroMatchCard extends StatelessWidget {
   final String awayTeam;
   final int homeScore;
   final int awayScore;
-  final int minute;
   final bool isLive;
   final String kickoffLabel;
   final bool compact;
@@ -68,7 +66,6 @@ class HomeHeroMatchCard extends StatelessWidget {
                   HomeHeroStatusBar(
                     isLive: isLive,
                     leagueChip: leagueChip,
-                    liveMinute: minute,
                     compact: compact,
                   ),
                   const Spacer(),
@@ -109,13 +106,14 @@ class HomeHeroMatchCard extends StatelessWidget {
                                 fontWeight: FontWeight.w800,
                               ),
                             ),
-                          Text(
-                            isLive ? '$minute\'' : kickoffLabel,
-                            style: const TextStyle(
-                              color: DashboardColors.accentNeon,
-                              fontWeight: FontWeight.w600,
+                          if (!isLive)
+                            Text(
+                              kickoffLabel,
+                              style: const TextStyle(
+                                color: DashboardColors.accentNeon,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
                         ],
                       ),
                       Expanded(

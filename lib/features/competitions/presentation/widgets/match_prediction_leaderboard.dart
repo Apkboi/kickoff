@@ -22,46 +22,49 @@ class MatchPredictionLeaderboard extends StatelessWidget {
         for (final e in entries)
           Padding(
             padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-            child: Row(
-              children: [
-                SizedBox(
-                  width: 28,
-                  child: Text(
-                    '${e.rank}',
-                    style: const TextStyle(
-                      color: DashboardColors.accentNeon,
-                      fontWeight: FontWeight.w800,
+            child: Builder(
+              builder: (context) {
+                final hasPhoto = e.photoUrl != null && e.photoUrl!.isNotEmpty;
+                return Row(
+                  children: [
+                    SizedBox(
+                      width: 28,
+                      child: Text(
+                        '${e.rank}',
+                        style: const TextStyle(
+                          color: DashboardColors.accentNeon,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                CircleAvatar(
-                  radius: 16,
-                  backgroundColor: DashboardColors.bgSurface,
-                  backgroundImage:
-                      e.photoUrl != null && e.photoUrl!.isNotEmpty ? NetworkImage(e.photoUrl!) : null,
-                  child: e.photoUrl == null || e.photoUrl!.isEmpty
-                      ? const Icon(Icons.person, size: 18, color: DashboardColors.textSecondary)
-                      : null,
-                ),
-                const SizedBox(width: AppSpacing.sm),
-                Expanded(
-                  child: Text(
-                    e.displayName,
-                    style: const TextStyle(
-                      color: DashboardColors.textPrimary,
-                      fontWeight: FontWeight.w600,
+                    CircleAvatar(
+                      radius: 16,
+                      backgroundColor: DashboardColors.bgSurface,
+                      foregroundImage: hasPhoto ? NetworkImage(e.photoUrl!) : null,
+                      onForegroundImageError: hasPhoto ? (_, __) {} : null,
+                      child: const Icon(Icons.person, size: 18, color: DashboardColors.textSecondary),
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-                Text(
-                  '${e.totalPoints} pts',
-                  style: const TextStyle(
-                    color: DashboardColors.accentGreen,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
+                    const SizedBox(width: AppSpacing.sm),
+                    Expanded(
+                      child: Text(
+                        e.displayName,
+                        style: const TextStyle(
+                          color: DashboardColors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text(
+                      '${e.totalPoints} pts',
+                      style: const TextStyle(
+                        color: DashboardColors.accentGreen,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
           ),
       ],

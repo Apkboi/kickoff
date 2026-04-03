@@ -4,15 +4,22 @@ import '../../../../core/constants/app_radius.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/dashboard_colors.dart';
 import '../../domain/entities/user_profile_entity.dart';
+import 'profile_display_name_dialog.dart';
 import 'profile_xp_bar.dart';
 
 class ProfileUserColumn extends StatelessWidget {
-  const ProfileUserColumn({required this.profile, super.key});
+  const ProfileUserColumn({
+    required this.profile,
+    required this.isOwnProfile,
+    super.key,
+  });
 
   final UserProfileEntity profile;
+  final bool isOwnProfile;
 
   @override
   Widget build(BuildContext context) {
+    final hasPhoto = profile.photoUrl != null && profile.photoUrl!.isNotEmpty;
     return Container(
       padding: const EdgeInsets.all(AppSpacing.lg),
       decoration: BoxDecoration(
@@ -39,12 +46,9 @@ class ProfileUserColumn extends StatelessWidget {
                   child: CircleAvatar(
                     radius: 48,
                     backgroundColor: DashboardColors.bgSurface,
-                    backgroundImage: profile.photoUrl != null && profile.photoUrl!.isNotEmpty
-                        ? NetworkImage(profile.photoUrl!)
-                        : null,
-                    child: profile.photoUrl == null || profile.photoUrl!.isEmpty
-                        ? const Icon(Icons.person, size: 48, color: DashboardColors.textSecondary)
-                        : null,
+                    foregroundImage: hasPhoto ? NetworkImage(profile.photoUrl!) : null,
+                    onForegroundImageError: hasPhoto ? (_, __) {} : null,
+                    child: const Icon(Icons.person, size: 48, color: DashboardColors.textSecondary),
                   ),
                 ),
                 Positioned(
@@ -72,13 +76,26 @@ class ProfileUserColumn extends StatelessWidget {
             ),
           ),
           const SizedBox(height: AppSpacing.lg),
-          Text(
-            profile.displayName,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: DashboardColors.textPrimary,
-                  fontWeight: FontWeight.w800,
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Flexible(
+                child: Text(
+                  profile.displayName,
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        color: DashboardColors.textPrimary,
+                        fontWeight: FontWeight.w800,
+                      ),
                 ),
+              ),
+              if (isOwnProfile)
+                IconButton(
+                  tooltip: 'Edit name',
+                  onPressed: () => showProfileDisplayNameDialog(context, profile.displayName),
+                  icon: const Icon(Icons.edit_outlined, color: DashboardColors.textSecondary, size: 20),
+                ),
+            ],
           ),
           const SizedBox(height: AppSpacing.xs),
           Row(
@@ -106,13 +123,13 @@ class ProfileUserColumn extends StatelessWidget {
           ),
           const SizedBox(height: AppSpacing.lg),
           FilledButton(
-            onPressed: () {},
+            onPressed: isOwnProfile ? () => showProfileDisplayNameDialog(context, profile.displayName) : null,
             style: FilledButton.styleFrom(
               backgroundColor: DashboardColors.bgSurface,
               foregroundColor: DashboardColors.textPrimary,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
             ),
-            child: const Text('Edit Profile'),
+            child: const Text('Edit profile'),
           ),
           const SizedBox(height: AppSpacing.sm),
           TextButton(

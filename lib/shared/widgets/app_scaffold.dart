@@ -20,9 +20,6 @@ void _goNav(BuildContext context, int semanticIndex) {
       context.go(AppRoutes.competitions);
       return;
     case 3:
-      context.go(AppRoutes.schedule);
-      return;
-    case 4:
       context.go(AppRoutes.profile);
       return;
     default:
@@ -105,17 +102,12 @@ class AppScaffold extends StatelessWidget {
         (
           outlined: Icons.emoji_events_outlined,
           filled: Icons.emoji_events,
-          label: 'Leagues'
-        ),
-        (
-          outlined: Icons.calendar_month_outlined,
-          filled: Icons.calendar_month,
-          label: 'Schedule'
+          label: 'Tournaments'
         ),
         (outlined: Icons.person_outlined, filled: Icons.person, label: 'Profile'),
       ];
 
-      final railIdx = neutralNav ? 0 : navIndex!.clamp(0, 4);
+      final railIdx = neutralNav ? 0 : navIndex!.clamp(0, 3);
 
       final rail = NavigationRail(
         backgroundColor: DashboardColors.sidebarBg,

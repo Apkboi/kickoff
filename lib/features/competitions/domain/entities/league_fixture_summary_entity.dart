@@ -14,6 +14,8 @@ class LeagueFixtureSummaryEntity extends Equatable {
     required this.awayScore,
     this.homeId,
     this.awayId,
+    this.homeAvatarUrl,
+    this.awayAvatarUrl,
   });
 
   final String matchId;
@@ -26,6 +28,8 @@ class LeagueFixtureSummaryEntity extends Equatable {
   final int awayScore;
   final String? homeId;
   final String? awayId;
+  final String? homeAvatarUrl;
+  final String? awayAvatarUrl;
 
   LeagueFixtureSummaryEntity copyWith({
     LeagueFixturePhase? phase,
@@ -35,6 +39,8 @@ class LeagueFixtureSummaryEntity extends Equatable {
     int? matchWeek,
     DateTime? kickoffAt,
     String? headline,
+    String? homeAvatarUrl,
+    String? awayAvatarUrl,
   }) {
     return LeagueFixtureSummaryEntity(
       matchId: matchId,
@@ -47,10 +53,25 @@ class LeagueFixtureSummaryEntity extends Equatable {
       awayScore: awayScore ?? this.awayScore,
       homeId: homeId,
       awayId: awayId,
+      homeAvatarUrl: homeAvatarUrl ?? this.homeAvatarUrl,
+      awayAvatarUrl: awayAvatarUrl ?? this.awayAvatarUrl,
     );
   }
 
   @override
   List<Object?> get props =>
-      [matchId, headline, statusLine, phase, matchWeek, kickoffAt, homeScore, awayScore, homeId, awayId];
+      [
+        matchId,
+        headline,
+        statusLine,
+        phase,
+        matchWeek,
+        kickoffAt,
+        homeScore,
+        awayScore,
+        homeId,
+        awayId,
+        homeAvatarUrl,
+        awayAvatarUrl,
+      ];
 }

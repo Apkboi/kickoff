@@ -3,14 +3,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/dashboard_colors.dart';
+import '../../../auth/presentation/controllers/auth_bloc.dart';
+import '../../../auth/presentation/controllers/auth_event.dart';
 import '../../domain/entities/user_profile_entity.dart';
 import 'profile_achievement_banner.dart';
+import 'profile_display_name_dialog.dart';
 import 'profile_avatar_ring.dart';
 import 'profile_sport_stat_card.dart';
 import 'profile_summary_stats_row.dart';
 import 'profile_xp_bar.dart';
-import '../controllers/profile_bloc.dart';
-import '../controllers/profile_event.dart';
 
 class ProfileMobileView extends StatelessWidget {
   const ProfileMobileView({
@@ -39,10 +40,12 @@ class ProfileMobileView extends StatelessWidget {
                         fontWeight: FontWeight.w800,
                       ),
                 ),
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.notifications_outlined, color: DashboardColors.textSecondary),
-                ),
+                if (isOwnProfile)
+                  IconButton(
+                    tooltip: 'Log out',
+                    onPressed: () => context.read<AuthBloc>().add(const SignOutRequested()),
+                    icon: const Icon(Icons.logout, color: DashboardColors.textSecondary),
+                  ),
               ],
             ),
           ),
@@ -71,7 +74,7 @@ class ProfileMobileView extends StatelessWidget {
                     if (isOwnProfile)
                       IconButton(
                         tooltip: 'Edit name',
-                        onPressed: () => _showEditNameDialog(context, profile.displayName),
+                        onPressed: () => showProfileDisplayNameDialog(context, profile.displayName),
                         icon: const Icon(Icons.edit_outlined, color: DashboardColors.textSecondary, size: 20),
                       ),
                   ],
@@ -88,6 +91,14 @@ class ProfileMobileView extends StatelessWidget {
                   xpToNext: profile.xpToNext,
                   progress: profile.xpProgress,
                 ),
+                if (isOwnProfile) ...[
+                  const SizedBox(height: AppSpacing.sm),
+                  Text(
+                    'You earn XP when matches you play in reach full time.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(color: DashboardColors.textSecondary),
+                  ),
+                ],
                 const SizedBox(height: AppSpacing.lg),
                 ProfileSummaryStatsRow(
                   matches: profile.matches,
@@ -127,34 +138,4 @@ class ProfileMobileView extends StatelessWidget {
       ],
     );
   }
-}
-
-void _showEditNameDialog(BuildContext context, String current) {
-  final controller = TextEditingController(text: current);
-  showDialog<void>(
-    context: context,
-    builder: (ctx) => AlertDialog(
-      backgroundColor: DashboardColors.bgCard,
-      title: const Text('Display name', style: TextStyle(color: DashboardColors.textPrimary)),
-      content: TextField(
-        controller: controller,
-        style: const TextStyle(color: DashboardColors.textPrimary),
-        decoration: const InputDecoration(
-          hintText: 'Your name',
-          hintStyle: TextStyle(color: DashboardColors.textSecondary),
-        ),
-        autofocus: true,
-      ),
-      actions: [
-        TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
-        TextButton(
-          onPressed: () {
-            context.read<ProfileBloc>().add(ProfileDisplayNameSubmitted(controller.text));
-            Navigator.pop(ctx);
-          },
-          child: const Text('Save'),
-        ),
-      ],
-    ),
-  );
 }

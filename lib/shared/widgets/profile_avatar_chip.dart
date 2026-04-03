@@ -17,13 +17,13 @@ class ProfileAvatarChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasPhoto = photoUrl != null && photoUrl!.isNotEmpty;
     final child = CircleAvatar(
       radius: radius,
       backgroundColor: DashboardColors.bgSurface,
-      backgroundImage: photoUrl != null && photoUrl!.isNotEmpty ? NetworkImage(photoUrl!) : null,
-      child: photoUrl == null || photoUrl!.isEmpty
-          ? Icon(Icons.person, color: DashboardColors.textSecondary, size: radius + 2)
-          : null,
+      foregroundImage: hasPhoto ? NetworkImage(photoUrl!) : null,
+      onForegroundImageError: hasPhoto ? (_, __) {} : null,
+      child: Icon(Icons.person, color: DashboardColors.textSecondary, size: radius + 2),
     );
     if (onTap == null) return child;
     return Material(

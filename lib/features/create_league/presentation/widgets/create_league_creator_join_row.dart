@@ -30,7 +30,7 @@ class CreateLeagueCreatorJoinRow extends StatelessWidget {
       subtitle: Padding(
         padding: const EdgeInsets.only(top: AppSpacing.xs),
         child: Text(
-          'Off: you organize only (no matches for you). Match results are updated in Manage league by admins.',
+          'Off: you organize only (no matches for you). Match results are updated in Manage tournament by admins.',
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
                 color: DashboardColors.textSecondary,
               ),

@@ -47,6 +47,9 @@ class UserProfileModel extends UserProfileEntity {
     final photoRaw = (data[UserFirestoreFields.photoUrl] as String?)?.trim();
     final photoUrl = photoRaw != null && photoRaw.isNotEmpty ? photoRaw : null;
 
+    final badges = (data[UserFirestoreFields.badges] as List?)?.map((e) => e.toString()).toList() ?? const <String>[];
+    final hasWelcome = badges.contains('kickoff_welcome');
+
     return UserProfileModel(
       displayName: rawName != null && rawName.isNotEmpty ? rawName : 'Player',
       locationLine: locationLine,
@@ -61,8 +64,10 @@ class UserProfileModel extends UserProfileEntity {
       streakDays: (data['streakDays'] as num?)?.toInt() ?? 0,
       sports: const [],
       achievement: ProfileAchievement(
-        title: 'KickOff member',
-        description: _membershipDescription(membershipTier),
+        title: hasWelcome ? 'Welcome badge' : 'KickOff member',
+        description: hasWelcome
+            ? 'Starter XP and welcome badge unlocked for joining KickOff.'
+            : _membershipDescription(membershipTier),
       ),
       photoUrl: photoUrl,
     );

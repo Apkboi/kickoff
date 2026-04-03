@@ -1,11 +1,10 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/constants/league_firestore_fields.dart';
-import '../../../../core/utils/app_datetime_format.dart';
+import '../../../../core/models/stream_link.dart';
 import '../../domain/entities/live_match_detail_entity.dart';
 import '../../domain/entities/manage_match_event_entity.dart';
 
@@ -86,11 +85,9 @@ class MatchDetailStreamDataSourceImpl implements MatchDetailStreamDataSource {
 
     final startedAtTs = fixtureData[LeagueFirestoreFields.startedAt] as Timestamp?;
     final kickoffAt = (fixtureData[LeagueFirestoreFields.kickoffAt] as Timestamp?)?.toDate();
-    final matchClock = switch (status) {
-      'live' => _formatElapsed(startedAtTs),
-      'finished' || 'ft' => 'FT',
-      _ => kickoffAt != null ? AppDateTimeFormat.kickoffFull(kickoffAt) : '—',
-    };
+    final startedAt = startedAtTs?.toDate();
+    // In-game clock disabled — not keeping accurate match time on clients yet.
+    const matchClock = '—';
 
     final statusLabel = switch (status) {
       'live' => 'LIVE',
@@ -101,6 +98,10 @@ class MatchDetailStreamDataSourceImpl implements MatchDetailStreamDataSource {
     final round = (fixtureData[LeagueFirestoreFields.round] as num?)?.toInt() ?? 0;
     final venueLine = round > 0 ? 'Matchday $round' : 'Matchday';
     final streamUrl = fixtureData[LeagueFirestoreFields.streamUrl] as String?;
+    final streamLinks = StreamLink.listFromFirestore(
+      fixtureData[LeagueFirestoreFields.streamLinks],
+      streamUrl,
+    );
 
     final recentEvents = eventsDocs.map((d) {
       final data = d.data();
@@ -126,20 +127,13 @@ class MatchDetailStreamDataSourceImpl implements MatchDetailStreamDataSource {
         isLive: isLive,
         venueLine: venueLine,
         streamUrl: streamUrl,
+        streamLinks: streamLinks,
         recentEvents: recentEvents,
         kickoffAt: kickoffAt,
+        startedAt: startedAt,
         matchStatusRaw: status,
       ),
     );
-  }
-
-  String _formatElapsed(Timestamp? startedAt) {
-    if (startedAt == null) return 'LIVE';
-    final elapsed = DateTime.now().difference(startedAt.toDate());
-    final totalSeconds = max(0, elapsed.inSeconds);
-    final minutes = totalSeconds ~/ 60;
-    final seconds = totalSeconds % 60;
-    return '$minutes:${seconds.toString().padLeft(2, '0')}';
   }
 
   ManageMatchEventKind _kindFromFirestore(String? kind) {

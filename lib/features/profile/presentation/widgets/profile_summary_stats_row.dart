@@ -24,7 +24,7 @@ class ProfileSummaryStatsRow extends StatelessWidget {
         const SizedBox(width: AppSpacing.sm),
         Expanded(child: _StatBox(label: 'WINS', value: '$wins', highlight: true)),
         const SizedBox(width: AppSpacing.sm),
-        Expanded(child: _StatBox(label: 'LEAGUES', value: '$leagues', highlight: false)),
+        Expanded(child: _StatBox(label: 'TOURNAMENTS', value: '$leagues', highlight: false)),
       ],
     );
   }

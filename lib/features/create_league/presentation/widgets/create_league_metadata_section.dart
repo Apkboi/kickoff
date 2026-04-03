@@ -211,7 +211,7 @@ class _CreateLeagueMetadataSectionState extends State<CreateLeagueMetadataSectio
           controller: _prizeController,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           style: const TextStyle(color: DashboardColors.textPrimary),
-          decoration: createLeagueFilledInputDecoration(hint: 'e.g. 5000'),
+          decoration: createLeagueFilledInputDecoration(hint: 'e.g. ₦5000'),
         ),
         const SizedBox(height: AppSpacing.md),
         CreateLeagueImageUrlField(

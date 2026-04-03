@@ -12,9 +12,7 @@ import '../controllers/auth_state.dart';
 import 'auth_branding_header.dart';
 import 'auth_footer_legal.dart';
 import 'auth_input_field.dart';
-import 'auth_or_divider.dart';
 import 'auth_primary_button.dart';
-import 'auth_social_button.dart';
 
 class SignInFormContent extends StatelessWidget {
   const SignInFormContent({
@@ -57,40 +55,6 @@ class SignInFormContent extends StatelessWidget {
               compact: Responsive.isMobile(context),
             ),
             const SizedBox(height: AppSpacing.xl),
-            Row(
-              children: [
-                AuthSocialButton(
-                  label: 'Google',
-                  leading: 'G',
-                  onTap: loading
-                      ? null
-                      : () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Google sign-in coming soon.'),
-                            ),
-                          );
-                        },
-                ),
-                const SizedBox(width: AppSpacing.md),
-                AuthSocialButton(
-                  label: 'Apple',
-                  leading: '\uF8FF',
-                  onTap: loading
-                      ? null
-                      : () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Apple sign-in coming soon.'),
-                            ),
-                          );
-                        },
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.lg),
-            const AuthOrDivider(text: 'OR SIGN IN WITH EMAIL'),
-            const SizedBox(height: AppSpacing.lg),
             AuthInputField(
               label: 'EMAIL ADDRESS',
               hint: 'pro@kickoff.com',

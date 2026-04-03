@@ -194,7 +194,7 @@ class LeaguePublishRemoteDataSourceImpl implements LeaguePublishRemoteDataSource
       name: creatorName,
       subtitle: 'League creator',
       isTeam: false,
-      isAdmin: true,
+      isAdmin: false,
       playsInLeague: creatorJoinsAsParticipant,
     );
     for (final p in invitedPlayers) {
@@ -207,12 +207,6 @@ class LeaguePublishRemoteDataSourceImpl implements LeaguePublishRemoteDataSource
         map[admin.id] = current.copyWith(isAdmin: true);
       } else {
         map[admin.id] = admin.copyWith(isAdmin: true);
-      }
-    }
-    for (final p in invitedPlayers) {
-      if (p.id == creatorId) {
-        final cur = map[creatorId]!;
-        map[creatorId] = cur.copyWith(isAdmin: cur.isAdmin || p.isAdmin);
       }
     }
     return map.values.toList();

@@ -4,7 +4,6 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../core/constants/app_radius.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/dashboard_colors.dart';
-import '../../../../core/utils/app_datetime_format.dart';
 import '../../domain/entities/live_match_detail_entity.dart';
 import 'manage_league_event_log.dart';
 
@@ -61,13 +60,7 @@ class MatchDetailView extends StatelessWidget {
               ),
             ],
           ),
-          if (!detail.isLive && detail.kickoffAt != null) ...[
-            const SizedBox(height: AppSpacing.sm),
-            Text(
-              'Kickoff · ${AppDateTimeFormat.kickoffFull(detail.kickoffAt!)}',
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: DashboardColors.textSecondary),
-            ),
-          ],
+          // Kickoff / elapsed timestamps hidden — match clock not tracked accurately yet.
           const SizedBox(height: AppSpacing.lg),
           // Text(
           //   detail.matchTitle,
@@ -97,30 +90,30 @@ class MatchDetailView extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpacing.sm),
-          Text(
-            detail.matchClock,
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(color: DashboardColors.accentGreen),
-          ),
           const SizedBox(height: AppSpacing.md),
           Text(
             'Streaming live — scores & events update automatically',
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.labelMedium?.copyWith(color: DashboardColors.textSecondary),
           ),
-          if (detail.streamUrl != null && detail.streamUrl!.trim().isNotEmpty) ...[
+          if (detail.streamLinks.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.md),
-            Center(
-              child: FilledButton.icon(
-                onPressed: () async {
-                  final uri = Uri.tryParse(detail.streamUrl!.trim());
-                  if (uri == null) return;
-                  await launchUrl(uri, mode: LaunchMode.externalApplication);
-                },
-                icon: const Icon(Icons.live_tv_outlined),
-                label: const Text('Stream live match'),
-              ),
+            Wrap(
+              alignment: WrapAlignment.center,
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
+              children: [
+                for (final l in detail.streamLinks)
+                  FilledButton.tonalIcon(
+                    onPressed: () async {
+                      final uri = Uri.tryParse(l.url);
+                      if (uri == null) return;
+                      await launchUrl(uri, mode: LaunchMode.externalApplication);
+                    },
+                    icon: const Icon(Icons.live_tv_outlined),
+                    label: Text(l.label),
+                  ),
+              ],
             ),
           ],
           const SizedBox(height: AppSpacing.lg),

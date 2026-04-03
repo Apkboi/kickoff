@@ -19,5 +19,6 @@ class LeagueDetailModel extends LeagueDetailEntity {
     required super.fixtures,
     super.logoUrl,
     super.bannerUrl,
+    super.creatorUserId,
   });
 }

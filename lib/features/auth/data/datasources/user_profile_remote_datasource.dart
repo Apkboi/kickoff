@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../core/constants/firestore_collections.dart';
+import '../../../../core/constants/user_firestore_fields.dart';
 import '../../../../core/errors/exceptions.dart';
 
 abstract class UserProfileRemoteDataSource {
@@ -32,7 +33,8 @@ class UserProfileRemoteDataSourceImpl implements UserProfileRemoteDataSource {
           'displayName': displayName,
           'photoUrl': null,
           'role': 'player',
-          'xpPoints': 0,
+          UserFirestoreFields.xpPoints: 50,
+          UserFirestoreFields.badges: ['kickoff_welcome'],
           'membershipTier': 'free',
           'createdAt': FieldValue.serverTimestamp(),
           'lastLoginAt': FieldValue.serverTimestamp(),

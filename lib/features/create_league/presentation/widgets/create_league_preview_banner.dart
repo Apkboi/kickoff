@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/dashboard_colors.dart';
 
 class CreateLeaguePreviewBanner extends StatelessWidget {
@@ -34,12 +35,12 @@ class CreateLeaguePreviewBanner extends StatelessWidget {
 
   Widget _assetFallback() {
     return Image.asset(
-      'assets/images/hero_stadium.png',
+      AppAssets.gamingHeroPlaceholder,
       fit: BoxFit.cover,
       errorBuilder: (_, __, ___) => Container(
         color: DashboardColors.bgSurface,
         alignment: Alignment.center,
-        child: const Icon(Icons.stadium, color: DashboardColors.textSecondary),
+        child: const Icon(Icons.sports_esports, color: DashboardColors.textSecondary),
       ),
     );
   }

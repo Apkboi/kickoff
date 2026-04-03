@@ -22,6 +22,7 @@ class KickoffSidebarUserSection extends StatelessWidget {
       builder: (context, state) {
         if (state is AuthLoaded && state.user.isAuthenticated) {
           final u = state.user;
+          final hasPhoto = u.photoUrl != null && u.photoUrl!.isNotEmpty;
           return Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -37,12 +38,9 @@ class KickoffSidebarUserSection extends StatelessWidget {
                     CircleAvatar(
                       radius: 22,
                       backgroundColor: DashboardColors.bgSurface,
-                      backgroundImage: u.photoUrl != null && u.photoUrl!.isNotEmpty
-                          ? NetworkImage(u.photoUrl!)
-                          : null,
-                      child: u.photoUrl == null || u.photoUrl!.isEmpty
-                          ? const Icon(Icons.person, color: DashboardColors.textSecondary)
-                          : null,
+                      foregroundImage: hasPhoto ? NetworkImage(u.photoUrl!) : null,
+                      onForegroundImageError: hasPhoto ? (_, __) {} : null,
+                      child: const Icon(Icons.person, color: DashboardColors.textSecondary),
                     ),
                     const SizedBox(width: AppSpacing.sm),
                     Expanded(

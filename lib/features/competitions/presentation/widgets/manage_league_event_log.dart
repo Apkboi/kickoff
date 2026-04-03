@@ -97,11 +97,6 @@ class _EventTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Text(
-              event.minuteLabel,
-              style: Theme.of(context).textTheme.labelMedium?.copyWith(color: DashboardColors.textSecondary),
-            ),
-            const SizedBox(width: AppSpacing.sm),
             Container(
               padding: const EdgeInsets.all(AppSpacing.sm),
               decoration: BoxDecoration(

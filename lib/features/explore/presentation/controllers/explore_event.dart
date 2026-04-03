@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 
+import '../../domain/entities/explore_feed_entity.dart';
 import '../../domain/entities/explore_filters.dart';
 import '../../domain/entities/explore_sort.dart';
 
@@ -43,4 +44,17 @@ class ExploreSortChanged extends ExploreEvent {
 
 class ExploreFiltersReset extends ExploreEvent {
   const ExploreFiltersReset();
+}
+
+class ExploreFeedSnapshot extends ExploreEvent {
+  const ExploreFeedSnapshot(this.feed);
+
+  final ExploreFeedEntity feed;
+
+  @override
+  List<Object?> get props => [feed];
+}
+
+class ExploreFeedStreamFailed extends ExploreEvent {
+  const ExploreFeedStreamFailed();
 }

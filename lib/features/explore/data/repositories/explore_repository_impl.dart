@@ -19,4 +19,7 @@ class ExploreRepositoryImpl implements ExploreRepository {
       return const Left(UnknownFailure('Unable to load explore'));
     }
   }
+
+  @override
+  Stream<ExploreFeedEntity> watchFeed() => _remote.watchFeed();
 }

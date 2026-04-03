@@ -5,6 +5,7 @@ import '../../../auth/presentation/controllers/auth_bloc.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/dashboard_colors.dart';
+import '../../../../shared/widgets/stream_link_launch_sheet.dart';
 import '../../domain/entities/home_live_match_entity.dart';
 import '../../domain/entities/home_trending_league_entity.dart';
 import '../../domain/entities/home_upcoming_fixture_entity.dart';
@@ -14,7 +15,6 @@ import '../controllers/upcoming_matches_bloc.dart';
 import '../utils/home_fixture_formatters.dart';
 import 'home_dashboard_hero.dart';
 import 'home_dashboard_nav.dart';
-import 'home_filter_chips.dart';
 import 'home_live_match_tile.dart';
 import 'home_mobile_header.dart';
 import 'home_section_header.dart';
@@ -38,23 +38,6 @@ class _HomeDashboardMobileState extends State<HomeDashboardMobile> {
   void dispose() {
     _scroll.dispose();
     super.dispose();
-  }
-
-  void _onChip(int i) {
-    if (i == 3) {
-      HomeDashboardNav.openExplore(context);
-      return;
-    }
-    final keys = [_liveKey, _upcomingKey, _trendingKey];
-    final ctx = keys[i].currentContext;
-    if (ctx != null) {
-      Scrollable.ensureVisible(
-        ctx,
-        duration: const Duration(milliseconds: 320),
-        curve: Curves.easeOutCubic,
-        alignment: 0.12,
-      );
-    }
   }
 
   @override
@@ -84,8 +67,6 @@ class _HomeDashboardMobileState extends State<HomeDashboardMobile> {
                       children: [
                         SizedBox(height: AppSpacing.lg),
                         const HomeMobileHeader(),
-                        // const SizedBox(height: AppSpacing.lg),
-                        // HomeFilterChips(onChipTap: _onChip),
                         const SizedBox(height: AppSpacing.lg),
                         HomeDashboardHero(
                           liveMatches: live,
@@ -115,7 +96,6 @@ class _HomeDashboardMobileState extends State<HomeDashboardMobile> {
                               padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                               child: HomeLiveMatchTile(
                                 league: m.leagueName,
-                                minute: m.elapsedMinute,
                                 home: m.homeName,
                                 away: m.awayName,
                                 homeScore: m.homeScore,
@@ -123,8 +103,13 @@ class _HomeDashboardMobileState extends State<HomeDashboardMobile> {
                                 progress: m.progress,
                                 userPhotoUrl: profilePhoto,
                                 onProfileTap: openProfile,
-                                onTap: () =>
-                                    HomeDashboardNav.openMatch(context, m.leagueId, m.matchId),
+                                onTap: () async {
+                                  if (m.streamLinks.isNotEmpty) {
+                                    await launchStreamLinksOrSheet(context, m.streamLinks);
+                                  } else {
+                                    HomeDashboardNav.openMatch(context, m.leagueId, m.matchId);
+                                  }
+                                },
                               ),
                             ),
                           ),

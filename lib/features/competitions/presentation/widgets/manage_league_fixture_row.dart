@@ -32,15 +32,15 @@ class ManageLeagueFixtureRow extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: DashboardColors.bgCard,
+            color: live ? DashboardColors.accentGreen.withValues(alpha: 0.08) : DashboardColors.bgCard,
             borderRadius: BorderRadius.circular(AppRadius.card),
             border: Border.all(
               color: isSelected
                   ? DashboardColors.accentGreen
                   : live
-                      ? DashboardColors.accentGreen.withValues(alpha: 0.35)
+                      ? DashboardColors.accentGreen.withValues(alpha: 0.55)
                       : DashboardColors.borderSubtle,
-              width: isSelected ? 2 : 1,
+              width: isSelected ? 2 : live ? 2 : 1,
             ),
           ),
           child: Column(
@@ -88,6 +88,31 @@ class ManageLeagueFixtureRow extends StatelessWidget {
                 style: Theme.of(context).textTheme.labelSmall?.copyWith(color: DashboardColors.textSecondary),
               ),
               const SizedBox(height: AppSpacing.sm),
+              Builder(
+                builder: (context) {
+                  final names = _namesFromHeadline(fixture.headline);
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: _FixtureSideAvatar(
+                          photoUrl: fixture.homeAvatarUrl,
+                          shortName: names.$1,
+                        ),
+                      ),
+                      Expanded(
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: _FixtureSideAvatar(
+                            photoUrl: fixture.awayAvatarUrl,
+                            shortName: names.$2,
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              const SizedBox(height: AppSpacing.sm),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -106,6 +131,54 @@ class ManageLeagueFixtureRow extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+(String, String) _namesFromHeadline(String headline) {
+  final parts = headline.split(RegExp(r'\s+vs\s+', caseSensitive: false));
+  if (parts.length >= 2) {
+    return (parts[0].trim(), parts[1].trim());
+  }
+  return ('Home', 'Away');
+}
+
+class _FixtureSideAvatar extends StatelessWidget {
+  const _FixtureSideAvatar({required this.photoUrl, required this.shortName});
+
+  final String? photoUrl;
+  final String shortName;
+
+  @override
+  Widget build(BuildContext context) {
+    final label = shortName.trim().isEmpty
+        ? '?'
+        : shortName.trim().toUpperCase().length <= 4
+            ? shortName.trim().toUpperCase()
+            : shortName.trim().toUpperCase().substring(0, 4);
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircleAvatar(
+          radius: 16,
+          backgroundImage: photoUrl != null && photoUrl!.isNotEmpty ? NetworkImage(photoUrl!) : null,
+          child: photoUrl == null || photoUrl!.isEmpty
+              ? Text(
+                  label.isNotEmpty ? label[0] : '?',
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w800),
+                )
+              : null,
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Flexible(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w700),
+          ),
+        ),
+      ],
     );
   }
 }

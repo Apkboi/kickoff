@@ -113,7 +113,7 @@ class ExploreDesktopView extends StatelessWidget {
                       child: grid.isEmpty
                           ? Center(
                               child: Text(
-                                'No leagues match your filters.',
+                                'No tournaments match your filters.',
                                 style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                                       color: DashboardColors.textSecondary,
                                     ),

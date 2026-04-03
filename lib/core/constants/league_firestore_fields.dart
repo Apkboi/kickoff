@@ -44,6 +44,9 @@ abstract final class LeagueFirestoreFields {
   static const endedAt = 'endedAt';
   static const streamUrl = 'streamUrl';
 
+  /// List of `{ label, url }` maps (e.g. YouTube, Twitch). [streamUrl] mirrors the first link for legacy clients.
+  static const streamLinks = 'streamLinks';
+
   static const participantId = 'participantId';
   static const played = 'played';
   static const won = 'won';

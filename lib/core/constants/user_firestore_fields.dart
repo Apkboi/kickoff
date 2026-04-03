@@ -8,4 +8,7 @@ abstract final class UserFirestoreFields {
   static const losses = 'losses';
   static const draws = 'draws';
   static const xpPoints = 'xpPoints';
+
+  /// String IDs, e.g. `kickoff_welcome`.
+  static const badges = 'badges';
 }

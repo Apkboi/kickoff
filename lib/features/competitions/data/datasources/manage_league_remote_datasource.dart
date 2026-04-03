@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/constants/user_firestore_fields.dart';
+import '../../../../core/models/stream_link.dart';
 import '../../../../core/constants/league_firestore_fields.dart';
 import '../../domain/entities/manage_match_event_entity.dart';
 import '../../domain/entities/league_fixture_summary_entity.dart';
@@ -19,7 +20,7 @@ abstract class ManageLeagueRemoteDataSource {
   Future<void> startMatch({
     required String competitionId,
     required String matchId,
-    String? streamUrl,
+    List<StreamLink> streamLinks = const [],
   });
 
   Future<void> updateMatchScores({required String competitionId, required String matchId, required int homeScore, required int awayScore});
@@ -81,13 +82,13 @@ class ManageLeagueRemoteDataSourceImpl implements ManageLeagueRemoteDataSource {
   Future<void> startMatch({
     required String competitionId,
     required String matchId,
-    String? streamUrl,
+    List<StreamLink> streamLinks = const [],
   }) async {
     await startMatchInFirestore(
       firestore: _firestore,
       competitionId: competitionId,
       matchId: matchId,
-      streamUrl: streamUrl,
+      streamLinks: streamLinks,
     );
   }
   @override

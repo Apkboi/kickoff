@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/constants/app_radius.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/dashboard_colors.dart';
 import '../../domain/entities/league_fixture_summary_entity.dart';
@@ -10,11 +9,13 @@ import '../controllers/manage_league_event.dart';
 import '../controllers/manage_league_state.dart';
 import 'manage_league_end_league_dialog.dart';
 import 'manage_league_schedule_dialog.dart';
-import 'manage_league_stream_link_dialog.dart';
+import 'manage_league_stream_links_dialog.dart';
 import 'manage_league_team_score_card.dart';
 
 class ManageLeagueDesktopScoreBlock extends StatelessWidget {
   const ManageLeagueDesktopScoreBlock({super.key});
+
+  static const double _actionHeight = 52;
 
   @override
   Widget build(BuildContext context) {
@@ -58,53 +59,62 @@ class ManageLeagueDesktopScoreBlock extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
-              children: [
-                FilledButton.tonalIcon(
-                  onPressed: () async {
-                    final name = await showManageLeagueEndLeagueDialog(context);
-                    if (!context.mounted || name == null) return;
-                    bloc.add(ManageLeagueCompetitionEnded(name));
-                  },
-                  icon: const Icon(Icons.emoji_events_outlined),
-                  label: const Text('End league'),
-                ),
-              ],
+            const SizedBox(height: AppSpacing.md),
+            SizedBox(
+              height: _actionHeight,
+              width: double.infinity,
+              child: FilledButton.tonalIcon(
+                onPressed: () async {
+                  final name = await showManageLeagueEndLeagueDialog(context);
+                  if (!context.mounted || name == null) return;
+                  bloc.add(ManageLeagueCompetitionEnded(name));
+                },
+                icon: const Icon(Icons.emoji_events_outlined),
+                label: const Text('End tournament'),
+              ),
             ),
             if (showStart) ...[
-              const SizedBox(height: AppSpacing.md),
-              FilledButton.icon(
-                onPressed: () async {
-                  final streamUrl = await showManageLeagueStreamLinkDialog(context);
-                  if (!context.mounted || streamUrl == null) return;
-                  bloc.add(ManageLeagueMatchStarted(state.selectedMatchId, streamUrl: streamUrl));
-                },
-                icon: const Icon(Icons.play_arrow_rounded),
-                label: const Text('Start match'),
-                style: FilledButton.styleFrom(
-                  backgroundColor: DashboardColors.accentGreen,
-                  foregroundColor: DashboardColors.textOnAccent,
+              const SizedBox(height: AppSpacing.sm),
+              SizedBox(
+                height: _actionHeight,
+                width: double.infinity,
+                child: FilledButton.icon(
+                  onPressed: () async {
+                    final links = await showManageLeagueStreamLinksDialog(context);
+                    if (!context.mounted || links == null) return;
+                    bloc.add(ManageLeagueMatchStarted(state.selectedMatchId, streamLinks: links));
+                  },
+                  icon: const Icon(Icons.play_arrow_rounded),
+                  label: const Text('Start match'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: DashboardColors.accentGreen,
+                    foregroundColor: DashboardColors.textOnAccent,
+                  ),
                 ),
               ),
             ],
             if (snap.scoringEnabled) ...[
               const SizedBox(height: AppSpacing.sm),
-              FilledButton.tonalIcon(
-                onPressed: () => bloc.add(ManageLeagueMatchEnded(state.selectedMatchId)),
-                icon: const Icon(Icons.stop_circle_outlined),
-                label: const Text('End match'),
+              SizedBox(
+                height: _actionHeight,
+                width: double.infinity,
+                child: FilledButton.tonalIcon(
+                  onPressed: () => bloc.add(ManageLeagueMatchEnded(state.selectedMatchId)),
+                  icon: const Icon(Icons.stop_circle_outlined),
+                  label: const Text('End match'),
+                ),
               ),
             ],
             if (selectedFixture != null && selectedFixture.phase == LeagueFixturePhase.scheduled) ...[
               const SizedBox(height: AppSpacing.sm),
-              Align(
-                alignment: Alignment.centerLeft,
+              SizedBox(
+                height: _actionHeight,
+                width: double.infinity,
                 child: FilledButton.icon(
                   onPressed: () async {
                     final kickoff = await showManageLeagueKickoffDialog(
                       context,
-                      initialKickoffAt: selectedFixture.kickoffAt ??
-                          DateTime.now().add(const Duration(days: 1)),
+                      initialKickoffAt: selectedFixture.kickoffAt ?? DateTime.now().add(const Duration(days: 1)),
                     );
                     if (!context.mounted || kickoff == null) return;
                     bloc.add(
@@ -115,7 +125,7 @@ class ManageLeagueDesktopScoreBlock extends StatelessWidget {
                     );
                   },
                   icon: const Icon(Icons.edit_calendar_outlined),
-                  label: const Text('Change kickoff time'),
+                  label: const Text('Change kickoff'),
                   style: FilledButton.styleFrom(
                     backgroundColor: DashboardColors.bgSurface,
                     foregroundColor: DashboardColors.textPrimary,
@@ -125,7 +135,7 @@ class ManageLeagueDesktopScoreBlock extends StatelessWidget {
             ],
             const SizedBox(height: AppSpacing.md),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Icon(Icons.shield_outlined, color: DashboardColors.textSecondary),
                 const SizedBox(width: AppSpacing.sm),
@@ -135,17 +145,9 @@ class ManageLeagueDesktopScoreBlock extends StatelessWidget {
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
                   ),
                 ),
-                Column(
-                  children: [
-                    Text(
-                      'TIME',
-                      style: Theme.of(context).textTheme.labelSmall?.copyWith(color: DashboardColors.textSecondary),
-                    ),
-                    Text(
-                      snap.matchClock,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
-                    ),
-                  ],
+                Text(
+                  '${snap.homeScore} — ${snap.awayScore}',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w900),
                 ),
                 Expanded(
                   child: Text(
@@ -178,37 +180,6 @@ class ManageLeagueDesktopScoreBlock extends StatelessWidget {
                   photoUrl: snap.awayPhotoUrl,
                   onMinus: () => bloc.add(const ManageLeagueAwayScoreDelta(-1)),
                   onPlus: () => bloc.add(const ManageLeagueAwayScoreDelta(1)),
-                ),
-              ],
-            ),
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                Expanded(
-                  child: DropdownButtonFormField<String>(
-                    initialValue: 'live',
-                    decoration: InputDecoration(
-                      labelText: 'Match Status',
-                      filled: true,
-                      fillColor: DashboardColors.bgCard,
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(AppRadius.button)),
-                    ),
-                    items: const [
-                      DropdownMenuItem(value: 'live', child: Text('Live - Second Half')),
-                      DropdownMenuItem(value: 'ht', child: Text('Half-time')),
-                    ],
-                    onChanged: snap.scoringEnabled ? (_) {} : null,
-                  ),
-                ),
-                const SizedBox(width: AppSpacing.lg),
-                Row(
-                  children: [
-                    Text(
-                      'Knockout Stage Only',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: DashboardColors.textSecondary),
-                    ),
-                    Switch(value: false, onChanged: snap.scoringEnabled ? (_) {} : null),
-                  ],
                 ),
               ],
             ),

@@ -23,6 +23,7 @@ class LeagueDetailEntity extends Equatable {
     required this.fixtures,
     this.logoUrl,
     this.bannerUrl,
+    this.creatorUserId,
   });
 
   final String id;
@@ -43,6 +44,9 @@ class LeagueDetailEntity extends Equatable {
   final List<LeagueFixtureSummaryEntity> fixtures;
   final String? logoUrl;
   final String? bannerUrl;
+
+  /// League document `creatorId`; may manage without `isAdmin` on members.
+  final String? creatorUserId;
 
   String get weekSubtitle => 'Week $currentWeek of $totalWeeks';
 
@@ -65,5 +69,6 @@ class LeagueDetailEntity extends Equatable {
         fixtures,
         logoUrl,
         bannerUrl,
+        creatorUserId,
       ];
 }

@@ -25,16 +25,14 @@ String leagueFixtureStatusLine({
   required int awayScore,
 }) {
   final week = 'Week $matchWeek';
-  final dateLabel = kickoffAt == null
-      ? 'Date TBD'
-      : '${kickoffAt.year.toString().padLeft(4, '0')}-${kickoffAt.month.toString().padLeft(2, '0')}-${kickoffAt.day.toString().padLeft(2, '0')} ${kickoffAt.hour.toString().padLeft(2, '0')}:${kickoffAt.minute.toString().padLeft(2, '0')}';
+  // Kickoff / clock strings omitted — not keeping accurate match times on clients yet.
   switch (phase) {
     case LeagueFixturePhase.live:
-      return 'Live • $week • $dateLabel';
+      return 'Live • $week';
     case LeagueFixturePhase.finished:
       return 'Full time • $homeScore-$awayScore • $week';
     case LeagueFixturePhase.scheduled:
-      return 'Scheduled • $week • $dateLabel';
+      return 'Scheduled • $week';
   }
 }
 

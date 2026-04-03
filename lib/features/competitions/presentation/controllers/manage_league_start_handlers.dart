@@ -158,7 +158,7 @@ class ManageLeagueStartHandlers {
       StartManageLeagueMatchParams(
         competitionId: competitionId,
         matchId: event.matchId,
-        streamUrl: event.streamUrl,
+        streamLinks: event.streamLinks,
       ),
     );
     var startedOk = false;

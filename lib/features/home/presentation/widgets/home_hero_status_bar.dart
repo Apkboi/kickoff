@@ -8,14 +8,12 @@ class HomeHeroStatusBar extends StatelessWidget {
   const HomeHeroStatusBar({
     required this.isLive,
     required this.leagueChip,
-    required this.liveMinute,
     required this.compact,
     super.key,
   });
 
   final bool isLive;
   final String leagueChip;
-  final int liveMinute;
   final bool compact;
 
   @override
@@ -46,7 +44,7 @@ class HomeHeroStatusBar extends StatelessWidget {
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Text(
-                  '• LIVE $liveMinute\'',
+                  '• LIVE',
                   style: TextStyle(
                     color: isLive ? Colors.black : DashboardColors.textPrimary,
                     fontWeight: FontWeight.w800,

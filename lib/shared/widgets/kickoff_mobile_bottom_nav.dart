@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/dashboard_colors.dart';
 
-/// Maps shell [navIndex] (0–4) to [NavigationBar] index. Profile = 4.
+/// Maps shell [navIndex] (0–3) to [NavigationBar] index. Profile = 3.
 int kickoffMobileBarIndex(int navIndex) {
-  return navIndex.clamp(0, 4);
+  return navIndex.clamp(0, 3);
 }
 
 int kickoffSemanticFromMobileBar(int barIndex) {
-  return barIndex.clamp(0, 4);
+  return barIndex.clamp(0, 3);
 }
 
 class KickoffMobileBottomNav extends StatelessWidget {
@@ -31,12 +31,7 @@ class KickoffMobileBottomNav extends StatelessWidget {
   })>[
     (outlined: Icons.home_outlined, filled: Icons.home, label: 'HOME'),
     (outlined: Icons.explore_outlined, filled: Icons.explore, label: 'EXPLORE'),
-    (outlined: Icons.groups_outlined, filled: Icons.groups, label: 'LEAGUES'),
-    (
-      outlined: Icons.calendar_month_outlined,
-      filled: Icons.calendar_month,
-      label: 'SCHEDULE'
-    ),
+    (outlined: Icons.groups_outlined, filled: Icons.groups, label: 'TOURNAMENTS'),
     (outlined: Icons.person_outline, filled: Icons.person, label: 'PROFILE'),
   ];
 

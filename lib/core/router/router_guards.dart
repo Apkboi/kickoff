@@ -15,7 +15,6 @@ abstract final class RouterGuards {
       AppRoutes.home,
       AppRoutes.createLeague,
       AppRoutes.explore,
-      AppRoutes.schedule,
       AppRoutes.profile,
     };
     return protected.contains(location);

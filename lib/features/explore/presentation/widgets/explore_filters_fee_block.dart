@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_radius.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/dashboard_colors.dart';
+import '../../../../core/utils/app_currency_format.dart';
 import 'explore_filter_sheet_widgets.dart';
 
 class ExploreFiltersFeeLocationBlock extends StatelessWidget {
@@ -35,7 +36,7 @@ class ExploreFiltersFeeLocationBlock extends StatelessWidget {
                   ),
             ),
             Text(
-              '\$${feeRange.start.round()} - \$${feeRange.end.round()}',
+              AppCurrencyFormat.nairaRange(feeRange.start, feeRange.end),
               style: Theme.of(context).textTheme.labelLarge?.copyWith(color: DashboardColors.accentGreen),
             ),
           ],
@@ -53,7 +54,7 @@ class ExploreFiltersFeeLocationBlock extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text('FREE', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: DashboardColors.textSecondary)),
-            Text(r'$1000+', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: DashboardColors.textSecondary)),
+            Text('₦1000+', style: Theme.of(context).textTheme.labelSmall?.copyWith(color: DashboardColors.textSecondary)),
           ],
         ),
         const SizedBox(height: AppSpacing.lg),

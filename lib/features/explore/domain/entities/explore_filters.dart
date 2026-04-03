@@ -5,8 +5,8 @@ import 'explore_sport.dart';
 
 class ExploreFilters extends Equatable {
   const ExploreFilters({
-    this.sports = const {ExploreSport.soccer},
-    this.standardLeague = true,
+    this.sports = const {},
+    this.standardLeague = false,
     this.tournament = false,
     this.knockout = false,
     this.registrationOpen = false,

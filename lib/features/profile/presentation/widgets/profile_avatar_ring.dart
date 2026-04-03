@@ -17,6 +17,7 @@ class ProfileAvatarRing extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasPhoto = profile.photoUrl != null && profile.photoUrl!.isNotEmpty;
     return Stack(
       clipBehavior: Clip.none,
       alignment: Alignment.center,
@@ -43,12 +44,9 @@ class ProfileAvatarRing extends StatelessWidget {
               child: CircleAvatar(
                 radius: 56,
                 backgroundColor: DashboardColors.bgSurface,
-                backgroundImage: profile.photoUrl != null && profile.photoUrl!.isNotEmpty
-                    ? NetworkImage(profile.photoUrl!)
-                    : null,
-                child: profile.photoUrl == null || profile.photoUrl!.isEmpty
-                    ? const Icon(Icons.person, size: 56, color: DashboardColors.textSecondary)
-                    : null,
+                foregroundImage: hasPhoto ? NetworkImage(profile.photoUrl!) : null,
+                onForegroundImageError: hasPhoto ? (_, __) {} : null,
+                child: const Icon(Icons.person, size: 56, color: DashboardColors.textSecondary),
               ),
             ),
           ),

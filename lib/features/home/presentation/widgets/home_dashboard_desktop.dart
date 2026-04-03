@@ -5,6 +5,7 @@ import '../../../auth/presentation/controllers/auth_bloc.dart';
 import '../../../auth/presentation/controllers/auth_state.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/theme/dashboard_colors.dart';
+import '../../../../shared/widgets/stream_link_launch_sheet.dart';
 import '../../domain/entities/home_live_match_entity.dart';
 import '../../domain/entities/home_upcoming_fixture_entity.dart';
 import '../controllers/live_matches_bloc.dart';
@@ -15,7 +16,6 @@ import 'home_dashboard_nav.dart';
 import 'home_desktop_trending_column.dart';
 import 'home_live_match_tile.dart';
 import 'home_section_header.dart';
-import 'home_top_bar.dart';
 import 'home_upcoming_tile_desktop.dart';
 
 class HomeDashboardDesktop extends StatelessWidget {
@@ -158,7 +158,6 @@ class _LiveBlock extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: AppSpacing.sm),
                   child: HomeLiveMatchTile(
                     league: m.leagueName,
-                    minute: m.elapsedMinute,
                     home: m.homeName,
                     away: m.awayName,
                     homeScore: m.homeScore,
@@ -166,7 +165,13 @@ class _LiveBlock extends StatelessWidget {
                     progress: m.progress,
                     userPhotoUrl: profilePhoto,
                     onProfileTap: onProfileTap,
-                    onTap: () => HomeDashboardNav.openMatch(context, m.leagueId, m.matchId),
+                    onTap: () async {
+                      if (m.streamLinks.isNotEmpty) {
+                        await launchStreamLinksOrSheet(context, m.streamLinks);
+                      } else {
+                        HomeDashboardNav.openMatch(context, m.leagueId, m.matchId);
+                      }
+                    },
                   ),
                 ),
           ],

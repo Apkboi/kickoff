@@ -3,7 +3,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/constants/user_firestore_fields.dart';
 
-/// Updates global `users/{uid}` aggregates when a fixture ends.
+/// Updates global `users/{uid}` aggregates when a fixture ends (matches played, W/D/L, XP).
+///
+/// XP is awarded per finished match via [UserFirestoreFields.xpPoints] using win/draw/loss weights.
 /// Assumes [homeParticipantId] / [awayParticipantId] match `users` doc ids (solo leagues).
 Future<void> applyUserGlobalMatchStatsAfterMatch({
   required FirebaseFirestore firestore,

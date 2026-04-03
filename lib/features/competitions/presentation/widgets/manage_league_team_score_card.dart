@@ -26,6 +26,7 @@ class ManageLeagueTeamScoreCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasPhoto = photoUrl != null && photoUrl!.isNotEmpty;
     return Expanded(
       child: Opacity(
         opacity: scoringEnabled ? 1 : 0.45,
@@ -42,12 +43,9 @@ class ManageLeagueTeamScoreCard extends StatelessWidget {
                 CircleAvatar(
                   radius: 18,
                   backgroundColor: DashboardColors.bgSurface,
-                  backgroundImage: photoUrl != null && photoUrl!.isNotEmpty
-                      ? NetworkImage(photoUrl!)
-                      : null,
-                  child: photoUrl == null || photoUrl!.isEmpty
-                      ? const Icon(Icons.shield_outlined, color: DashboardColors.textSecondary, size: 20)
-                      : null,
+                  foregroundImage: hasPhoto ? NetworkImage(photoUrl!) : null,
+                  onForegroundImageError: hasPhoto ? (_, __) {} : null,
+                  child: const Icon(Icons.shield_outlined, color: DashboardColors.textSecondary, size: 20),
                 ),
             const SizedBox(height: AppSpacing.md),
             Text(

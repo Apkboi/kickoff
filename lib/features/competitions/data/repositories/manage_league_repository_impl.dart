@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../../../../core/models/stream_link.dart';
 import '../../domain/entities/league_fixture_summary_entity.dart';
 import '../../domain/entities/manage_league_dashboard_entity.dart';
 import '../../domain/entities/manage_league_snapshot_entity.dart';
@@ -83,13 +84,13 @@ class ManageLeagueRepositoryImpl implements ManageLeagueRepository {
   Future<Either<Failure, Unit>> startMatch({
     required String competitionId,
     required String matchId,
-    String? streamUrl,
+    List<StreamLink> streamLinks = const [],
   }) async {
     try {
       await _remote.startMatch(
         competitionId: competitionId,
         matchId: matchId,
-        streamUrl: streamUrl,
+        streamLinks: streamLinks,
       );
       return const Right(unit);
     } on Exception catch (e) {

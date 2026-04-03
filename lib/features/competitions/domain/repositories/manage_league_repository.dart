@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../../../../core/models/stream_link.dart';
 import '../entities/manage_league_dashboard_entity.dart';
 import '../entities/manage_league_snapshot_entity.dart';
 import '../entities/league_fixture_summary_entity.dart';
@@ -20,7 +21,7 @@ abstract class ManageLeagueRepository {
   Future<Either<Failure, Unit>> startMatch({
     required String competitionId,
     required String matchId,
-    String? streamUrl,
+    List<StreamLink> streamLinks = const [],
   });
 
   Future<Either<Failure, Unit>> updateMatchScores({

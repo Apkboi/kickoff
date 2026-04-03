@@ -20,7 +20,7 @@ class ManageLeagueBackBar extends StatelessWidget {
           ),
           Expanded(
             child: Text(
-              'Manage league',
+              'Manage tournament',
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: DashboardColors.textPrimary,
                     fontWeight: FontWeight.w700,

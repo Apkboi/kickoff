@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_radius.dart';
 import '../../../../core/constants/app_spacing.dart';
 import '../../../../core/constants/app_routes.dart';
@@ -42,22 +43,18 @@ class ExploreLeagueGridCard extends StatelessWidget {
                       child: Image.network(
                         league.bannerUrl!,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, __, ___) => const SizedBox.shrink(),
+                        errorBuilder: (_, __, ___) => Image.asset(
+                          AppAssets.gamingHeroPlaceholder,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     )
                   else
-                    Container(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                            DashboardColors.bgSurface,
-                            DashboardColors.bgPrimary,
-                          ],
-                        ),
+                    Positioned.fill(
+                      child: Image.asset(
+                        AppAssets.gamingHeroPlaceholder,
+                        fit: BoxFit.cover,
                       ),
-                      child: Icon(Icons.stadium, size: 64, color: _tagColor.withValues(alpha: 0.35)),
                     ),
                   Positioned.fill(
                     child: DecoratedBox(

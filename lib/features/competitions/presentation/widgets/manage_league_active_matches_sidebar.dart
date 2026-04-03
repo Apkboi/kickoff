@@ -39,6 +39,8 @@ class _ManageLeagueActiveMatchesSidebarState extends State<ManageLeagueActiveMat
         }
 
         final visibleFixtures = state.fixtures.take(ManageLeagueActiveMatchesSidebar._pageSize).toList();
+        final totalGames = state.fixtures.length;
+        final hasMore = totalGames > ManageLeagueActiveMatchesSidebar._pageSize;
 
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -63,14 +65,14 @@ class _ManageLeagueActiveMatchesSidebarState extends State<ManageLeagueActiveMat
                         borderRadius: BorderRadius.circular(AppRadius.pill),
                       ),
                       child: Text(
-                        '${visibleFixtures.length} GAMES',
+                        '$totalGames GAMES',
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
                               color: DashboardColors.accentNeon,
                               fontWeight: FontWeight.w800,
                             ),
                       ),
                     ),
-                    if (state.fixtures.length == ManageLeagueActiveMatchesSidebar._pageSize)
+                    if (hasMore)
                       Padding(
                         padding: const EdgeInsets.only(left: AppSpacing.sm),
                         child: TextButton(

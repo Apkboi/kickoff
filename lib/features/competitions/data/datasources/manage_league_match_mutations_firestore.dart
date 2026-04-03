@@ -3,13 +3,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../core/constants/firestore_collections.dart';
 import '../../../../core/constants/league_firestore_fields.dart';
 import '../../../../core/errors/exceptions.dart';
+import '../../../../core/models/stream_link.dart';
 import '../../domain/entities/manage_match_event_entity.dart';
 
 Future<void> startMatchInFirestore({
   required FirebaseFirestore firestore,
   required String competitionId,
   required String matchId,
-  String? streamUrl,
+  List<StreamLink> streamLinks = const [],
 }) async {
   try {
     final fixtureRef = firestore
@@ -18,13 +19,19 @@ Future<void> startMatchInFirestore({
         .collection(FirestoreCollections.fixtures)
         .doc(matchId);
 
+    final startTime = DateTime.now();
     final payload = <String, dynamic>{
       LeagueFirestoreFields.status: 'live',
       LeagueFirestoreFields.startedAt: FieldValue.serverTimestamp(),
+      LeagueFirestoreFields.kickoffAt: Timestamp.fromDate(startTime),
       LeagueFirestoreFields.updatedAt: FieldValue.serverTimestamp(),
     };
-    if (streamUrl != null && streamUrl.trim().isNotEmpty) {
-      payload[LeagueFirestoreFields.streamUrl] = streamUrl.trim();
+    final links = streamLinks.where((l) => l.url.trim().isNotEmpty).toList();
+    if (links.isNotEmpty) {
+      payload[LeagueFirestoreFields.streamLinks] = links
+          .map((l) => <String, String>{'label': l.label.trim(), 'url': l.url.trim()})
+          .toList();
+      payload[LeagueFirestoreFields.streamUrl] = links.first.url.trim();
     }
     await fixtureRef.update(payload);
   } on FirebaseException catch (e) {

@@ -8,6 +8,7 @@ class CompetitionModel extends CompetitionEntity {
     required super.teamCount,
     required super.matchdayLabel,
     required super.status,
+    super.maxParticipants = 32,
     super.xpPoolLabel,
     super.showMeBadge,
     super.logoUrl,
@@ -21,6 +22,7 @@ class CompetitionModel extends CompetitionEntity {
       teamCount: json['teamCount'] as int? ?? 0,
       matchdayLabel: json['matchdayLabel'] as String? ?? 'Matchday 1',
       status: _statusFromJson(json['status'] as String?),
+      maxParticipants: json['maxParticipants'] as int? ?? 32,
       xpPoolLabel: json['xpPoolLabel'] as String?,
       showMeBadge: json['showMeBadge'] as bool? ?? false,
     );
@@ -33,6 +35,7 @@ class CompetitionModel extends CompetitionEntity {
       'teamCount': teamCount,
       'matchdayLabel': matchdayLabel,
       'status': status.name,
+      'maxParticipants': maxParticipants,
       'xpPoolLabel': xpPoolLabel,
       'showMeBadge': showMeBadge,
     };

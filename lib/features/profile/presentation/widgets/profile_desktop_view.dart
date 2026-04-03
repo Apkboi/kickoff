@@ -33,13 +33,16 @@ class _ProfileDesktopViewState extends State<ProfileDesktopView> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        ProfileDesktopTopBar(streakDays: p.streakDays),
+        const ProfileDesktopTopBar(),
         const SizedBox(height: AppSpacing.lg),
         Expanded(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(width: 320, child: ProfileUserColumn(profile: p)),
+              SizedBox(
+                width: 320,
+                child: ProfileUserColumn(profile: p, isOwnProfile: widget.isOwnProfile),
+              ),
               const SizedBox(width: AppSpacing.lg),
               Expanded(
                 child: SingleChildScrollView(

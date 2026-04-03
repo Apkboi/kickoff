@@ -80,7 +80,7 @@ class ExploreMobileView extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(AppSpacing.lg),
                 child: Text(
-                  'No leagues match your filters.',
+                  'No tournaments match your filters.',
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(color: DashboardColors.textSecondary),
                 ),

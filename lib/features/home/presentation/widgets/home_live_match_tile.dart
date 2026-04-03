@@ -8,7 +8,6 @@ import '../../../../shared/widgets/profile_avatar_chip.dart';
 class HomeLiveMatchTile extends StatelessWidget {
   const HomeLiveMatchTile({
     required this.league,
-    required this.minute,
     required this.home,
     required this.away,
     required this.homeScore,
@@ -21,7 +20,6 @@ class HomeLiveMatchTile extends StatelessWidget {
   });
 
   final String league;
-  final int minute;
   final String home;
   final String away;
   final int homeScore;
@@ -39,9 +37,12 @@ class HomeLiveMatchTile extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(AppSpacing.md),
           decoration: BoxDecoration(
-            color: DashboardColors.bgCard,
+            color: DashboardColors.accentGreen.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(AppRadius.card),
-            border: Border.all(color: DashboardColors.borderSubtle),
+            border: Border.all(
+              color: DashboardColors.accentGreen.withValues(alpha: 0.55),
+              width: 2,
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,9 +61,9 @@ class HomeLiveMatchTile extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Text(
-                    'LIVE $minute\'',
-                    style: const TextStyle(
+                  const Text(
+                    'LIVE',
+                    style: TextStyle(
                       color: DashboardColors.accentNeon,
                       fontWeight: FontWeight.w700,
                       fontSize: 12,
